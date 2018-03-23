@@ -6,6 +6,11 @@
   "types": "build/index.d.ts",
   "author": "Servall Development",
   "license": "MIT",
+  "repository" :
+  {
+    "type" : "git",
+    "url" : "https://github.com/servall/pi-camera-connect"
+  },
   "scripts": {
     "test": "jest --runInBand",
     "build": "tsc --declaration",
