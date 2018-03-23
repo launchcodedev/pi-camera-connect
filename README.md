@@ -1,5 +1,5 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/servall/pi-camera-connect/master/LICENSE)
-[![npm](https://img.shields.io/npm/v/ninprint.svg)](https://www.npmjs.com/package/pi-camera-connect)
+[![npm](https://img.shields.io/npm/v/pi-camera-connect.svg)](https://www.npmjs.com/package/pi-camera-connect)
 
 # Pi Camera Connect - for NodeJS
 
