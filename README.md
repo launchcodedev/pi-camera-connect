@@ -14,7 +14,7 @@ There are many NPM modules for connecting to the Raspberry Pi camera, why use th
 - **Usable:** Video streams are available as `stream.Readable` objects that can be piped or listened to
 - **Tested:** Contains automated tests using Jest
 - **Modern:** Uses the latest ESNext features and up to date development practices
-- **Structure**: Ships with TypeScript defintion files
+- **Structure**: Ships with TypeScript definition files
 
 ## Install
 NPM
@@ -50,7 +50,7 @@ runApp();
 
 Video capture:
 ```javascript
-import { StreamCamera } from "pi-camera-connect";
+import { StreamCamera, Codec } from "pi-camera-connect";
 import * as fs from "fs";
 
 // Capture 5 seconds of H264 video and save to disk
@@ -88,7 +88,7 @@ stillCamera.takeImage().then(image => {
 
 Video capture:
 ```javascript
-const { StreamCamera } = require("pi-camera-connect");
+const { StreamCamera, Codec } = require("pi-camera-connect");
 
 const streamCamera = new StreamCamera({
     codec: Codec.H264
@@ -162,7 +162,7 @@ The GPU on the Raspberry Pi comes with a hardware-accelerated H264 encoder and J
 A standard NodeJS [readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable) is available after calling `startCapture()`. As with any readable stream, it can be piped or listened to.
 
 ```javascript
-import { StreamCamera, Codec } from "./src";
+import { StreamCamera, Codec } from "pi-camera-connect";
 import * as fs from "fs";
 
 const runApp = async () => {
@@ -210,7 +210,7 @@ Note that this example produces a raw H264 video. Wrapping it in a video contain
 - [`SensorMode`](#sensormode)
 
 ## `StillCamera`
-A class for taking still images. Equivalent to running the raspistill command.
+A class for taking still images. Equivalent to running the `raspistill` command.
 
 ### `constructor (options: StillOptions = {}): StillCamera`
 
@@ -291,6 +291,10 @@ Image rotation options.
 - `Rotation.Rotate180`
 - `Rotation.Rotate270`
 
+```javascript
+import { Rotation } from "pi-camera-connect";
+```
+
 ## `Flip`
 Image flip options.
 - `Flip.None`
@@ -298,10 +302,18 @@ Image flip options.
 - `Flip.Vertical`
 - `Flip.Both`
 
+```javascript
+import { Flip } from "pi-camera-connect";
+```
+
 ## `Codec`
 Stream codec options.
 - `Codec.H264`
 - `Codec.MJPEG`
+
+```javascript
+import { Codec } from "pi-camera-connect";
+```
 
 ## `SensorMode`
 Stream sensor mode options.
@@ -313,6 +325,10 @@ Stream sensor mode options.
 - `SensorMode.Mode5`
 - `SensorMode.Mode6`
 - `SensorMode.Mode7`
+
+```javascript
+import { SensorMode } from "pi-camera-connect";
+```
 
 These are slightly different depending on the version of Raspberry Pi camera you are using.
 
