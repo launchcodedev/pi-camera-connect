@@ -11,7 +11,7 @@ There are many NPM modules for connecting to the Raspberry Pi camera, why use th
 
 - **Speed:** JPEG images can be captured in ~33ms using a built in MJPEG parser
 - **Efficient:** Pictures and video streams are piped directly into Node as a `Buffer`, keeping all data in memory and eliminating disk I/O
-- **Usable:** Video streams are available as `stream.Readable` objects that can be piped or listened to
+- **Usable:** Video streams are available as [`stream.Readable`](https://nodejs.org/api/stream.html#stream_class_stream_readable) objects that can be piped or listened to
 - **Tested:** Contains automated tests using Jest
 - **Modern:** Uses the latest ESNext features and up to date development practices
 - **Structure**: Ships with TypeScript definition files
@@ -60,13 +60,17 @@ const runApp = async () => {
         codec: Codec.H264
     });
 
-    const videoStream = await streamCamera.startCapture();
+    const videoStream = streamCamera.createStream();
 
     const writeStream = fs.createWriteStream("video-stream.h264");
 
     videoStream.pipe(writeStream);
 
-    setTimeout(() => streamCamera.stopCapture(), 5000);
+    await streamCamera.startCapture();
+    
+    await new Promise(resolve => setTimeout(() => resolve(), 5000));
+
+    await streamCamera.stopCapture();
 };
 
 runApp();
@@ -96,9 +100,11 @@ const streamCamera = new StreamCamera({
 
 const writeStream = fs.createWriteStream("video-stream.h264");
 
-streamCamera.startCapture().then(videoStream => {
-    
-    videoStream.pipe(writeStream);
+const videoStream = streamCamera.createStream();
+
+videoStream.pipe(writeStream);
+
+streamCamera.startCapture().then(() => {
 
     setTimeout(() => streamCamera.stopCapture(), 5000);
 });
@@ -159,7 +165,7 @@ Capturing a video stream is easy. There are currently 2 codecs supported: `H264`
 The GPU on the Raspberry Pi comes with a hardware-accelerated H264 encoder and JPEG encoder. To capture videos in real time, using these hardware encoders are required.
 
 ### Stream
-A standard NodeJS [readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable) is available after calling `startCapture()`. As with any readable stream, it can be piped or listened to.
+A standard NodeJS [readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable) is available after calling `createStream()`. As with any readable stream, it can be piped or listened to.
 
 ```javascript
 import { StreamCamera, Codec } from "pi-camera-connect";
@@ -171,19 +177,23 @@ const runApp = async () => {
         codec: Codec.H264
     });
 
-    const videoStream = await streamCamera.startCapture();
+    const videoStream = streamCamera.createStream();
 
     const writeStream = fs.createWriteStream("video-stream.h264");
 
     // Pipe the video stream to our video file
     videoStream.pipe(writeStream);
 
+    await streamCamera.startCapture();
+
     // We can also listen to data events as they arrive
     videoStream.on("data", data => console.log("New data", data));
     videoStream.on("end", data => console.log("Video stream has ended"));
 
-    // Stop the stream after 5 seconds
-    setTimeout(() => streamCamera.stopCapture(), 5000);
+    // Wait for 5 seconds
+    await new Promise(resolve => setTimeout(() => resolve(), 5000));
+
+    await streamCamera.stopCapture();
 };
 
 runApp();
@@ -197,12 +207,13 @@ Note that this example produces a raw H264 video. Wrapping it in a video contain
 
 ## API
 - [`StillCamera`](#stillcamera)
-    - `constructor(options: StillOptions = {}): StillCamera`
+    - `constructor(options?: StillOptions): StillCamera`
     - `takeImage(): Promise<Buffer>`
 - [`StreamCamera`](#streamcamera)
-    - `constructor(options: StreamOptions = {}): StreamCamera`
-    - `startCapture(): Promise<stream.Readable>`
+    - `constructor(options?: StreamOptions): StreamCamera`
+    - `startCapture(): Promise<void>`
     - `stopCapture(): Promise<void>`
+    - `createStream(): stream.Readable`
     - `takeImage(): Promise<Buffer>`
 - [`Rotation`](#rotation)
 - [`Flip`](#flip)
@@ -212,7 +223,7 @@ Note that this example produces a raw H264 video. Wrapping it in a video contain
 ## `StillCamera`
 A class for taking still images. Equivalent to running the `raspistill` command.
 
-### `constructor (options: StillOptions = {}): StillCamera`
+### `constructor (options?: StillOptions): StillCamera`
 
 Instantiates a new `StillCamera` class.
 
@@ -241,7 +252,7 @@ const image = await stillCamera.takeImage();
 ## `StreamCamera`
 A class for capturing a stream of camera data, either as `H264` or `MJPEG`.
 
-### `constructor(options: StreamOptions = {}): StreamCamera`
+### `constructor(options?: StreamOptions): StreamCamera`
 
 Instantiates a new `StreamCamera` class.
 
@@ -261,15 +272,43 @@ const streamCamera = new StreamCamera({
 - [`codec: Codec`](#codec) - *Default: `Codec.H264`*
 - [`sensorMode: SensorMode`](#sensormode) - *Default: `SensorMode.AutoSelect`*
 
-### `startCapture(): Promise<stream.Readable>`
-Begins the camera stream. Returns a `Promise` with a readable stream of the video data that is resolved when the capture has started.
+### `startCapture(): Promise<void>`
+Begins the camera stream. Returns a `Promise` that is resolved when the capture has started.
 
 ### `stopCapture(): Promise<void>`
 Ends the camera stream. Returns a `Promise` that is resolved when the capture has stopped.
 
+### `createStream(): stream.Readable`
+Creates a [`readable stream`](https://nodejs.org/api/stream.html#stream_class_stream_readable) of video data. There is no limit to the number of streams you can create.
+
+Be aware that, as with any readable stream, data will buffer in memory until it is read. If you create a video stream but do not read its data, your program will quickly run out of memory.
+
+Ways to read data so that it does not remain buffered in memory include:
+- Switching the stream to 'flowing' mode by calling either `resume()`, `pipe()`, or attaching a listener to the `'data'` event
+- Calling `read()` when the stream is in 'paused' mode
+
+See the [readable stream documentation](https://nodejs.org/api/stream.html#stream_two_modes) for more information on flowing/paused modes.
+
+```javascript
+const streamCamera = new StreamCamera({
+    codec: Codec.H264
+});
+
+const videoStream = streamCamera.createStream();
+
+await streamCamera.startCapture();
+
+videoStream.on("data", data => console.log("New video data", data));
+
+// Wait 5 seconds
+await new Promise(resolve => setTimeout(() => resolve(), 5000));
+
+await streamCamera.stopCapture();
+```
+
 ### `takeImage(): Promise<Buffer>`
 
-Takes a JPEG image from an MJPEG camera stream, resulting in very fast image captures. Returns a `Promise` with a `Buffer` containing the image bytes.
+Takes a JPEG image frame from an MJPEG camera stream, resulting in very fast image captures. Returns a `Promise` with a `Buffer` containing the image bytes.
 
 *Note: `StreamOptions.codec` must be set to `Codec.MJPEG`, otherwise `takeImage()` with throw an error.*
 ```javascript

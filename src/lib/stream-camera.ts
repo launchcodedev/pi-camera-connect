@@ -41,7 +41,7 @@ class StreamCamera extends EventEmitter {
 
 	private options: StreamOptions;
 	private childProcess?: ChildProcess;
-	private stream?: stream.Readable;
+	private streams: Array<stream.Readable> = [];
 
 	constructor(options: StreamOptions = {}) {
 
@@ -58,7 +58,7 @@ class StreamCamera extends EventEmitter {
 		};
 	}
 
-	startCapture(): Promise<stream.Readable> {
+	startCapture(): Promise<void> {
 
 		return new Promise(async (resolve, reject) => {
 
@@ -161,10 +161,6 @@ class StreamCamera extends EventEmitter {
 				"--output", "-"
 			];
 
-			this.stream = new stream.Readable({
-				read: () => {}
-			});
-
 			// Spawn child process
 			this.childProcess = spawn("raspivid", args);
 
@@ -172,14 +168,14 @@ class StreamCamera extends EventEmitter {
 			this.childProcess.once("error", err => reject(new Error("Could not start capture with StreamCamera. Are you running on a Raspberry Pi with 'raspivid' installed?")));
 
 			// Wait for first data event to resolve promise
-			this.childProcess.stdout.once("data", () => resolve(this.stream));
+			this.childProcess.stdout.once("data", () => resolve());
 
 			let stdoutBuffer = Buffer.alloc(0);
 
 			// Listen for image data events and parse MJPEG frames if codec is MJPEG
 			this.childProcess.stdout.on("data", (data: Buffer) => {
 
-				this.stream && this.stream.push(data);
+				this.streams.forEach(stream => stream.push(data));
 
 				if (this.options.codec !== Codec.MJPEG)
 					return;
@@ -223,14 +219,22 @@ class StreamCamera extends EventEmitter {
 
 		this.childProcess && this.childProcess.kill();
 
-		// Push null to the data stream to indicate EOF
-		if (this.stream) {
+		// Push null to each stream to indicate EOF
+		// tslint:disable-next-line no-null-keyword
+		this.streams.forEach(stream => stream.push(null));
 
-			// tslint:disable-next-line no-null-keyword
-			this.stream.push(null);
+		this.streams = [];
+	}
 
-			this.stream = undefined;
-		}
+	createStream() {
+
+		const newStream = new stream.Readable({
+			read: () => {}
+		});
+
+		this.streams.push(newStream);
+
+		return newStream;
 	}
 
 	takeImage() {
