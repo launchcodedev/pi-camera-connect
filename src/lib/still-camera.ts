@@ -45,7 +45,12 @@ export default class StillCamera {
 				 * Rotation
 				 */
 				...(this.options.rotation ? ["--rotation", this.options.rotation.toString()] : []),
-
+				
+				/**
+				* Shutter Speed
+				*/
+				...(this.options.shutter ? ["--shutter", this.options.shutter.toString()] : []),
+				
 				/**
 				 * Horizontal flip
 				 */
