@@ -7,6 +7,7 @@ export interface StillOptions {
 	rotation?: Rotation;
 	flip?: Flip;
 	delay?: number;
+	shutter?: number;
 }
 
 export default class StillCamera {
