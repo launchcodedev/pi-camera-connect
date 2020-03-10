@@ -6,26 +6,24 @@
   "types": "build/index.d.ts",
   "author": "Servall Development",
   "license": "MIT",
-  "repository" :
-  {
-    "type" : "git",
-    "url" : "https://github.com/servall/pi-camera-connect"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/servall/pi-camera-connect"
   },
   "scripts": {
     "test": "jest --runInBand",
-    "build": "tsc --declaration",
-    "prepublish": "npm run build",
-    "ts-node": "ts-node"
+    "build": "tsc -b",
+    "prepublish": "yarn build"
   },
   "devDependencies": {
-    "@types/jest": "^22.2.0",
-    "@types/node": "^9.4.7",
-    "jest": "^22.4.2",
-    "nodemon": "^1.17.2",
-    "ts-jest": "^22.4.2",
-    "ts-node": "^5.0.1",
-    "tslint": "^5.9.1",
-    "typescript": "^2.7.2"
+    "@types/jest": "22",
+    "@types/node": "*",
+    "jest": "22",
+    "nodemon": "1",
+    "ts-jest": "22",
+    "ts-node": "5",
+    "tslint": "5",
+    "typescript": "3"
   },
   "jest": {
     "transform": {

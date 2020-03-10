@@ -1,26 +1,28 @@
 {
-    "compilerOptions": {
-		"lib": ["es2017"],
-        "module": "commonjs",
-        "target": "es6",
-        "noImplicitAny": true,
-        "moduleResolution": "node",
-        "sourceMap": false,
-		"outDir": "./build",
-		"rootDir": "./src",
-		"strict": true,
-		"typeRoots": [
-			"types"
-		],
-		"types": [
-			"node"
-		] 
-    },
-    "include": [
-        "src/**/*"
+  "compilerOptions": {
+    "lib": [
+      "es2017"
     ],
-    "exclude": [
-		"**/*.test.ts",
-		"**/__mocks__/*"
+    "module": "commonjs",
+    "target": "es6",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "typeRoots": [
+      "types"
+    ],
+    "types": [
+      "node"
     ]
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "**/*.test.ts",
+    "**/__mocks__/*"
+  ]
 }
