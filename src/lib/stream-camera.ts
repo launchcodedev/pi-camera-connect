@@ -1,249 +1,263 @@
-import { ChildProcessWithoutNullStreams, spawn } from "child_process";
-import { EventEmitter } from "events";
-import * as stream from "stream";
-import { Flip, Rotation } from "..";
+import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
+import { EventEmitter } from 'events';
+import * as stream from 'stream';
+import { Flip, Rotation } from '..';
 
 export enum Codec {
-	H264 = "H264",
-	MJPEG = "MJPEG"
+  H264 = 'H264',
+  MJPEG = 'MJPEG',
 }
 
 export enum SensorMode {
-	AutoSelect = 0,
-	Mode1 = 1,
-	Mode2 = 2,
-	Mode3 = 3,
-	Mode4 = 4,
-	Mode5 = 5,
-	Mode6 = 6,
-	Mode7 = 7
+  AutoSelect = 0,
+  Mode1 = 1,
+  Mode2 = 2,
+  Mode3 = 3,
+  Mode4 = 4,
+  Mode5 = 5,
+  Mode6 = 6,
+  Mode7 = 7,
 }
 
 export interface StreamOptions {
-	width?: number;
-	height?: number;
-	rotation?: Rotation;
-	flip?: Flip;
-	bitRate?: number;
-	fps?: number;
-	codec?: Codec;
-	sensorMode?: SensorMode;
+  width?: number;
+  height?: number;
+  rotation?: Rotation;
+  flip?: Flip;
+  bitRate?: number;
+  fps?: number;
+  codec?: Codec;
+  sensorMode?: SensorMode;
 }
 
 declare interface StreamCamera {
-	on(event: "frame", listener: (image: Buffer) => void): this;
-	once(event: "frame", listener: (image: Buffer) => void): this;
+  on(event: 'frame', listener: (image: Buffer) => void): this;
+  once(event: 'frame', listener: (image: Buffer) => void): this;
 }
 
 class StreamCamera extends EventEmitter {
+  static readonly jpegSignature = Buffer.from([
+    0xff,
+    0xd8,
+    0xff,
+    0xe0,
+    0x00,
+    0x10,
+    0x4a,
+    0x46,
+    0x49,
+    0x46,
+    0x00,
+  ]);
 
-	static readonly jpegSignature = Buffer.from([0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00]);
+  private readonly options: StreamOptions;
+  private childProcess?: ChildProcessWithoutNullStreams;
+  private streams: Array<stream.Readable> = [];
 
-	private options: StreamOptions;
-	private childProcess?: ChildProcessWithoutNullStreams;
-	private streams: Array<stream.Readable> = [];
+  constructor(options: StreamOptions = {}) {
+    super();
 
-	constructor(options: StreamOptions = {}) {
+    this.options = {
+      rotation: Rotation.Rotate0,
+      flip: Flip.None,
+      bitRate: 17000000,
+      fps: 30,
+      codec: Codec.H264,
+      sensorMode: SensorMode.AutoSelect,
+      ...options,
+    };
+  }
 
-		super();
+  startCapture(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const args: Array<string> = [
+        /**
+         * Width
+         */
+        ...(this.options.width ? ['--width', this.options.width.toString()] : []),
 
-		this.options = {
-			rotation: Rotation.Rotate0,
-			flip: Flip.None,
-			bitRate: 17000000,
-			fps: 30,
-			codec: Codec.H264,
-			sensorMode: SensorMode.AutoSelect,
-			...options
-		};
-	}
+        /**
+         * Height
+         */
+        ...(this.options.height ? ['--height', this.options.height.toString()] : []),
 
-	startCapture(): Promise<void> {
+        /**
+         * Rotation
+         */
+        ...(this.options.rotation ? ['--rotation', this.options.rotation.toString()] : []),
 
-		return new Promise(async (resolve, reject) => {
+        /**
+         * Horizontal flip
+         */
+        ...(this.options.flip &&
+        (this.options.flip === Flip.Horizontal || this.options.flip === Flip.Both)
+          ? ['--hflip']
+          : []),
 
-			const args: Array<string> = [
+        /**
+         * Vertical flip
+         */
+        ...(this.options.flip &&
+        (this.options.flip === Flip.Vertical || this.options.flip === Flip.Both)
+          ? ['--vflip']
+          : []),
 
-				/**
-				 * Width
-				 */
-				...(this.options.width ? ["--width", this.options.width.toString()] : []),
+        /**
+         * Bit rate
+         */
+        ...(this.options.bitRate ? ['--bitrate', this.options.bitRate.toString()] : []),
 
-				/**
-				 * Height
-				 */
-				...(this.options.height ? ["--height", this.options.height.toString()] : []),
+        /**
+         * Frame rate
+         */
+        ...(this.options.fps ? ['--framerate', this.options.fps.toString()] : []),
 
-				/**
-				 * Rotation
-				 */
-				...(this.options.rotation ? ["--rotation", this.options.rotation.toString()] : []),
+        /**
+         * Codec
+         *
+         * H264 or MJPEG
+         *
+         */
+        ...(this.options.codec ? ['--codec', this.options.codec.toString()] : []),
 
-				/**
-				 * Horizontal flip
-				 */
-				...(this.options.flip && (this.options.flip === Flip.Horizontal || this.options.flip === Flip.Both) ?
-					["--hflip"] : []),
+        /**
+         * Sensor mode
+         *
+         * Camera version 1.x (OV5647):
+         *
+         * | Mode |        Size         | Aspect Ratio | Frame rates |   FOV   |    Binning    |
+         * |------|---------------------|--------------|-------------|---------|---------------|
+         * |    0 | automatic selection |              |             |         |               |
+         * |    1 | 1920x1080           | 16:9         | 1-30fps     | Partial | None          |
+         * |    2 | 2592x1944           | 4:3          | 1-15fps     | Full    | None          |
+         * |    3 | 2592x1944           | 4:3          | 0.1666-1fps | Full    | None          |
+         * |    4 | 1296x972            | 4:3          | 1-42fps     | Full    | 2x2           |
+         * |    5 | 1296x730            | 16:9         | 1-49fps     | Full    | 2x2           |
+         * |    6 | 640x480             | 4:3          | 42.1-60fps  | Full    | 2x2 plus skip |
+         * |    7 | 640x480             | 4:3          | 60.1-90fps  | Full    | 2x2 plus skip |
+         *
+         *
+         * Camera version 2.x (IMX219):
+         *
+         * | Mode |        Size         | Aspect Ratio | Frame rates |   FOV   | Binning |
+         * |------|---------------------|--------------|-------------|---------|---------|
+         * |    0 | automatic selection |              |             |         |         |
+         * |    1 | 1920x1080           | 16:9         | 0.1-30fps   | Partial | None    |
+         * |    2 | 3280x2464           | 4:3          | 0.1-15fps   | Full    | None    |
+         * |    3 | 3280x2464           | 4:3          | 0.1-15fps   | Full    | None    |
+         * |    4 | 1640x1232           | 4:3          | 0.1-40fps   | Full    | 2x2     |
+         * |    5 | 1640x922            | 16:9         | 0.1-40fps   | Full    | 2x2     |
+         * |    6 | 1280x720            | 16:9         | 40-90fps    | Partial | 2x2     |
+         * |    7 | 640x480             | 4:3          | 40-90fps    | Partial | 2x2     |
+         *
+         */
+        ...(this.options.sensorMode ? ['--mode', this.options.sensorMode.toString()] : []),
 
-				/**
-				 * Vertical flip
-				 */
-				...(this.options.flip && (this.options.flip === Flip.Vertical || this.options.flip === Flip.Both) ?
-					["--vflip"] : []),
+        /**
+         * Capture time (ms)
+         *
+         * Zero = forever
+         *
+         */
+        '--timeout',
+        (0).toString(),
 
-				/**
-				 * Bit rate
-				 */
-				...(this.options.bitRate ? ["--bitrate", this.options.bitRate.toString()] : []),
+        /**
+         * Do not display preview overlay on screen
+         */
+        '--nopreview',
 
-				/**
-				 * Frame rate
-				 */
-				...(this.options.fps ? ["--framerate", this.options.fps.toString()] : []),
+        /**
+         * Output to stdout
+         */
+        '--output',
+        '-',
+      ];
 
-				/**
-				 * Codec
-				 *
-				 * H264 or MJPEG
-				 *
-				 */
-				...(this.options.codec ? ["--codec", this.options.codec.toString()] : []),
+      // Spawn child process
+      this.childProcess = spawn('raspivid', args);
 
-				/**
-				 * Sensor mode
-				 *
-				 * Camera version 1.x (OV5647):
-				 *
-				 * | Mode |        Size         | Aspect Ratio | Frame rates |   FOV   |    Binning    |
-				 * |------|---------------------|--------------|-------------|---------|---------------|
-				 * |    0 | automatic selection |              |             |         |               |
-				 * |    1 | 1920x1080           | 16:9         | 1-30fps     | Partial | None          |
-				 * |    2 | 2592x1944           | 4:3          | 1-15fps     | Full    | None          |
-				 * |    3 | 2592x1944           | 4:3          | 0.1666-1fps | Full    | None          |
-				 * |    4 | 1296x972            | 4:3          | 1-42fps     | Full    | 2x2           |
-				 * |    5 | 1296x730            | 16:9         | 1-49fps     | Full    | 2x2           |
-				 * |    6 | 640x480             | 4:3          | 42.1-60fps  | Full    | 2x2 plus skip |
-				 * |    7 | 640x480             | 4:3          | 60.1-90fps  | Full    | 2x2 plus skip |
-				 *
-				 *
-				 * Camera version 2.x (IMX219):
-				 *
-				 * | Mode |        Size         | Aspect Ratio | Frame rates |   FOV   | Binning |
-				 * |------|---------------------|--------------|-------------|---------|---------|
-				 * |    0 | automatic selection |              |             |         |         |
-				 * |    1 | 1920x1080           | 16:9         | 0.1-30fps   | Partial | None    |
-				 * |    2 | 3280x2464           | 4:3          | 0.1-15fps   | Full    | None    |
-				 * |    3 | 3280x2464           | 4:3          | 0.1-15fps   | Full    | None    |
-				 * |    4 | 1640x1232           | 4:3          | 0.1-40fps   | Full    | 2x2     |
-				 * |    5 | 1640x922            | 16:9         | 0.1-40fps   | Full    | 2x2     |
-				 * |    6 | 1280x720            | 16:9         | 40-90fps    | Partial | 2x2     |
-				 * |    7 | 640x480             | 4:3          | 40-90fps    | Partial | 2x2     |
-				 *
-				 */
-				...(this.options.sensorMode ? ["--mode", this.options.sensorMode.toString()] : []),
+      // Listen for error event to reject promise
+      this.childProcess.once('error', () =>
+        reject(
+          new Error(
+            "Could not start capture with StreamCamera. Are you running on a Raspberry Pi with 'raspivid' installed?",
+          ),
+        ),
+      );
 
-				/**
-				 * Capture time (ms)
-				 *
-				 * Zero = forever
-				 *
-				 */
-				"--timeout", (0).toString(),
+      // Wait for first data event to resolve promise
+      this.childProcess.stdout.once('data', () => resolve());
 
-				/**
-				 * Do not display preview overlay on screen
-				 */
-				"--nopreview",
+      let stdoutBuffer = Buffer.alloc(0);
 
-				/**
-				 * Output to stdout
-				 */
-				"--output", "-"
-			];
+      // Listen for image data events and parse MJPEG frames if codec is MJPEG
+      this.childProcess.stdout.on('data', (data: Buffer) => {
+        this.streams.forEach(stream => stream.push(data));
 
-			// Spawn child process
-			this.childProcess = spawn("raspivid", args);
+        if (this.options.codec !== Codec.MJPEG) return;
 
-			// Listen for error event to reject promise
-			this.childProcess.once("error", err => reject(new Error("Could not start capture with StreamCamera. Are you running on a Raspberry Pi with 'raspivid' installed?")));
+        stdoutBuffer = Buffer.concat([stdoutBuffer, data]);
 
-			// Wait for first data event to resolve promise
-			this.childProcess.stdout.once("data", () => resolve());
+        // Extract all image frames from the current buffer
+        while (true) {
+          const signatureIndex = stdoutBuffer.indexOf(StreamCamera.jpegSignature, 0);
 
-			let stdoutBuffer = Buffer.alloc(0);
+          if (signatureIndex === -1) break;
 
-			// Listen for image data events and parse MJPEG frames if codec is MJPEG
-			this.childProcess.stdout.on("data", (data: Buffer) => {
+          // Make sure the signature starts at the beginning of the buffer
+          if (signatureIndex > 0) stdoutBuffer = stdoutBuffer.slice(signatureIndex);
 
-				this.streams.forEach(stream => stream.push(data));
+          const nextSignatureIndex = stdoutBuffer.indexOf(
+            StreamCamera.jpegSignature,
+            StreamCamera.jpegSignature.length,
+          );
 
-				if (this.options.codec !== Codec.MJPEG)
-					return;
+          if (nextSignatureIndex === -1) break;
 
-				stdoutBuffer = Buffer.concat([stdoutBuffer, data]);
+          this.emit('frame', stdoutBuffer.slice(0, nextSignatureIndex));
 
-				// Extract all image frames from the current buffer
-				while (true) {
+          stdoutBuffer = stdoutBuffer.slice(nextSignatureIndex);
+        }
+      });
 
-					const signatureIndex = stdoutBuffer.indexOf(StreamCamera.jpegSignature, 0);
+      // Listen for error events
+      this.childProcess.stdout.on('error', err => this.emit('error', err));
+      this.childProcess.stderr.on('data', data => this.emit('error', new Error(data.toString())));
+      this.childProcess.stderr.on('error', err => this.emit('error', err));
 
-					if (signatureIndex === -1)
-						break;
+      // Listen for close events
+      this.childProcess.stdout.on('close', () => this.emit('close'));
+    });
+  }
 
-					// Make sure the signature starts at the beginning of the buffer
-					if (signatureIndex > 0)
-						stdoutBuffer = stdoutBuffer.slice(signatureIndex);
+  async stopCapture() {
+    if (this.childProcess) {
+      this.childProcess.kill();
+    }
 
-					const nextSignatureIndex = stdoutBuffer.indexOf(StreamCamera.jpegSignature, StreamCamera.jpegSignature.length);
+    // Push null to each stream to indicate EOF
+    // tslint:disable-next-line no-null-keyword
+    this.streams.forEach(stream => stream.push(null));
 
-					if (nextSignatureIndex === -1)
-						break;
+    this.streams = [];
+  }
 
-					this.emit("frame", stdoutBuffer.slice(0, nextSignatureIndex));
+  createStream() {
+    const newStream = new stream.Readable({
+      read: () => {},
+    });
 
-					stdoutBuffer = stdoutBuffer.slice(nextSignatureIndex);
-				}
-			});
+    this.streams.push(newStream);
 
-			// Listen for error events
-			this.childProcess.stdout.on("error", err => this.emit("error", err));
-			this.childProcess.stderr.on("data", data => this.emit("error", new Error(data.toString())));
-			this.childProcess.stderr.on("error", err => this.emit("error", err));
+    return newStream;
+  }
 
-			// Listen for close events
-			this.childProcess.stdout.on("close", () => this.emit("close"));
-		});
-	}
+  takeImage() {
+    if (this.options.codec !== Codec.MJPEG) throw new Error("Codec must be 'MJPEG' to take image");
 
-	async stopCapture() {
-
-		this.childProcess && this.childProcess.kill();
-
-		// Push null to each stream to indicate EOF
-		// tslint:disable-next-line no-null-keyword
-		this.streams.forEach(stream => stream.push(null));
-
-		this.streams = [];
-	}
-
-	createStream() {
-
-		const newStream = new stream.Readable({
-			read: () => {}
-		});
-
-		this.streams.push(newStream);
-
-		return newStream;
-	}
-
-	takeImage() {
-
-		if (this.options.codec !== Codec.MJPEG)
-			throw new Error("Codec must be 'MJPEG' to take image");
-
-		return new Promise<Buffer>(resolve => this.once("frame", data => resolve(data)));
-	}
+    return new Promise<Buffer>(resolve => this.once('frame', data => resolve(data)));
+  }
 }
 
 export default StreamCamera;
