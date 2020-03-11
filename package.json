@@ -34,7 +34,6 @@
     "@types/node": "*",
     "eslint": "6",
     "jest": "25",
-    "nodemon": "1",
     "prettier": "1",
     "typescript": "3"
   },
