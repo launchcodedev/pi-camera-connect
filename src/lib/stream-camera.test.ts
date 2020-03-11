@@ -11,7 +11,7 @@ test('Method takeImage() grabs JPEG from MJPEG stream', async () => {
 
   await streamCamera.stopCapture();
 
-  expect(jpegImage.indexOf(StreamCamera.jpegSignature)).toBe(0);
+  expect(jpegImage.indexOf(await StreamCamera.getJpegSignature())).toBe(0);
 });
 
 test('Method createStream() returns a stream of video data', async () => {
