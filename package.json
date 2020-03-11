@@ -2,39 +2,48 @@
   "name": "pi-camera-connect",
   "version": "0.2.0",
   "description": "Library to capture and stream Raspberry Pi camera data directly to NodeJS",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
-  "author": "Servall Development",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": {
+    "name": "Launchcode",
+    "email": "admin@lc.dev",
+    "url": "https://lc.dev"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/servall/pi-camera-connect"
   },
   "scripts": {
-    "test": "jest --runInBand",
     "build": "tsc -b",
-    "prepublish": "yarn build"
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "lint": "eslint --ext .ts,.tsx src",
+    "fix": "eslint --ext .ts,.tsx src --fix",
+    "test": "jest --runInBand",
+    "prepublishOnly": "yarn clean && yarn build"
   },
   "devDependencies": {
-    "@types/jest": "22",
+    "@lcdev/eslint-config": "0.2",
+    "@lcdev/jest": "0.2",
+    "@lcdev/prettier": "0.1",
+    "@lcdev/tsconfig": "0.1",
+    "@types/jest": "25",
     "@types/node": "*",
-    "jest": "22",
+    "eslint": "6",
+    "jest": "25",
     "nodemon": "1",
-    "ts-jest": "22",
-    "ts-node": "5",
-    "tslint": "5",
+    "prettier": "1",
     "typescript": "3"
   },
   "jest": {
-    "transform": {
-      "^.+\\.ts$": "ts-jest"
-    },
-    "testRegex": "(/tests/.*|(\\.|/)(test|spec))\\.(js|ts)$",
-    "moduleFileExtensions": [
-      "ts",
-      "js",
-      "json",
-      "node"
-    ]
+    "preset": "@lcdev/jest"
+  },
+  "prettier": "@lcdev/prettier",
+  "eslintConfig": {
+    "extends": "@lcdev",
+    "rules": {
+      "no-constant-condition": 0,
+      "no-shadow": 0
+    }
   }
 }

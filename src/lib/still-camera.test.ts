@@ -1,10 +1,9 @@
-import StillCamera from "./still-camera";
+import StillCamera from './still-camera';
 
-test("takeImage() returns JPEG", async () => {
+test('takeImage() returns JPEG', async () => {
+  const stillCamera = new StillCamera();
 
-	const stillCamera = new StillCamera();
+  const jpegImage = await stillCamera.takeImage();
 
-	const jpegImage = await stillCamera.takeImage();
-
-	expect(jpegImage.indexOf(StillCamera.jpegSignature)).toBe(0);
+  expect(jpegImage.indexOf(StillCamera.jpegSignature)).toBe(0);
 });

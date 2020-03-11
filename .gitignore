@@ -1,3 +1,25 @@
-dist/
 node_modules/
-yarn-error.log
+
+# config
+*.secrets.*
+
+# common build sites
+dist/
+dist-types/
+
+# build artifacts
+*.tsbuildinfo
+*.lcov
+coverage/
+.eslintcache
+
+# logs and errors
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+stats.json
+
+# dev environments
+.vscode/*
+**/.DS_Store
