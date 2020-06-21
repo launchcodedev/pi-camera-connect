@@ -61,6 +61,8 @@ class StreamCamera extends EventEmitter {
       case 'BCM2835 - Pi 3 Model B':
       case 'BCM2835 - Pi 3 Model B+':
       case 'BCM2835 - Pi 4 Model B':
+      case 'BCM2835 - Pi Zero':
+      case 'BCM2835 - Pi Zero W':
         return Buffer.from([0xff, 0xd8, 0xff, 0xdb, 0x00, 0x84, 0x00]);
       default:
         throw new Error(
