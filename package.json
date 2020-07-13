@@ -9,7 +9,7 @@
   "repository" :
   {
     "type" : "git",
-    "url" : "https://github.com/amcelroy/pi-camera-connect#shutter"
+    "url" : "https://github.com/servall/pi-camera-connect"
   },
   "scripts": {
     "test": "jest --runInBand",
