@@ -239,7 +239,7 @@ const stillCamera = new StillCamera({
 - [`rotation: Rotation`](#rotation) - *Default: `Rotation.Rotate0`*
 - [`flip: Flip`](#flip) - *Default: `Flip.None`*
 - `delay: number` - *Default: 1 ms*
-- [`shutter: number`](#flip) - *Default: `Not set. Number is in micro seconds, i.e. 6000 is a shutter speed of 6000 micro seconds`
+- `shutter: number` - *Default: Auto calculated based on framerate (1000000µs/fps). Number is in microseconds*
 
 ### `StillCamera.takeImage(): Promise<Buffer>`
 
