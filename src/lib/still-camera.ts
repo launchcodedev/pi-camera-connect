@@ -28,6 +28,8 @@ export default class StillCamera {
       case 'BCM2835 - Pi 3 Model B':
       case 'BCM2835 - Pi 3 Model B+':
       case 'BCM2835 - Pi 4 Model B':
+      case 'BCM2835 - Pi Zero':
+      case 'BCM2835 - Pi Zero W':
         return Buffer.from([0xff, 0xd8, 0xff, 0xe1]);
       default:
         throw new Error(
