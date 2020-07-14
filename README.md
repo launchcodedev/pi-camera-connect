@@ -239,6 +239,13 @@ const stillCamera = new StillCamera({
 - [`rotation: Rotation`](#rotation) - *Default: `Rotation.Rotate0`*
 - [`flip: Flip`](#flip) - *Default: `Flip.None`*
 - `delay: number` - *Default: 1 ms*
+- `shutter: number` - *Default: Auto calculated based on framerate (1000000µs/fps). Number is in microseconds*
+- `iso: number` - *Default: Auto*
+- `exposureCompensation: number` - *Default: `0`*
+- [`exposureMode: ExposureMode`](#exposuremode) - *Default: Auto*
+- [`awbMode: AwbMode`](#awbmode) - *Default: Auto*
+- `analoggain: number` - *Default: 0*
+- `digitalgain: number` - *Default: 0*
 
 ### `StillCamera.takeImage(): Promise<Buffer>`
 
@@ -271,6 +278,13 @@ const streamCamera = new StreamCamera({
 - `fps: number` - *Default: 30 fps*
 - [`codec: Codec`](#codec) - *Default: `Codec.H264`*
 - [`sensorMode: SensorMode`](#sensormode) - *Default: `SensorMode.AutoSelect`*
+- `shutter: number` - *Default: Auto calculated based on framerate (1000000µs/fps). Number is in microseconds*
+- `iso: number` - *Default: Auto*
+- `exposureCompensation: number` - *Default: `0`*
+- [`exposureMode: ExposureMode`](#exposuremode) - *Default: Auto*
+- [`awbMode: AwbMode`](#awbmode) - *Default: Auto*
+- `analoggain: number` - *Default: 0*
+- `digitalgain: number` - *Default: 0*
 
 ### `startCapture(): Promise<void>`
 Begins the camera stream. Returns a `Promise` that is resolved when the capture has started.
@@ -343,6 +357,44 @@ Image flip options.
 
 ```javascript
 import { Flip } from "pi-camera-connect";
+```
+
+## `ExposureMode`
+Exposure mode options.
+- `ExposureMode.Off`
+- `ExposureMode.Auto`
+- `ExposureMode.Night`
+- `ExposureMode.NightPreview`
+- `ExposureMode.Backlight`
+- `ExposureMode.Spotlight`
+- `ExposureMode.Sports`
+- `ExposureMode.Snow`
+- `ExposureMode.Beach`
+- `ExposureMode.VeryLong`
+- `ExposureMode.FixedFps`
+- `ExposureMode.AntiShake`
+- `ExposureMode.Fireworks`
+
+```javascript
+import { ExposureMode } from "pi-camera-connect";
+```
+
+## `AwbMode`
+White balance mode options.
+- `Off`
+- `Auto`
+- `Sun`
+- `Cloud`
+- `Shade`
+- `Tungsten`
+- `Fluorescent`
+- `Incandescent`
+- `Flash`
+- `Horizon`
+- `GreyWorld`
+
+```javascript
+import { AwbMode } from "pi-camera-connect";
 ```
 
 ## `Codec`
