@@ -2,7 +2,8 @@ import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 import { EventEmitter } from 'events';
 import * as stream from 'stream';
 import * as si from 'systeminformation';
-import { Flip, Rotation } from '..';
+import { AwbMode, ExposureMode, Flip, Rotation } from '..';
+import { getSharedArgs } from './shared-args';
 
 export enum Codec {
   H264 = 'H264',
@@ -29,6 +30,13 @@ export interface StreamOptions {
   fps?: number;
   codec?: Codec;
   sensorMode?: SensorMode;
+  shutter?: number;
+  iso?: number;
+  exposureCompensation?: number;
+  exposureMode?: ExposureMode;
+  awbMode?: AwbMode;
+  analogGain?: number;
+  digitalGain?: number;
 }
 
 declare interface StreamCamera {
@@ -79,35 +87,9 @@ class StreamCamera extends EventEmitter {
       try {
         const args: Array<string> = [
           /**
-           * Width
+           * Add the command-line arguments that are common to both `raspivid` and `raspistill`
            */
-          ...(this.options.width ? ['--width', this.options.width.toString()] : []),
-
-          /**
-           * Height
-           */
-          ...(this.options.height ? ['--height', this.options.height.toString()] : []),
-
-          /**
-           * Rotation
-           */
-          ...(this.options.rotation ? ['--rotation', this.options.rotation.toString()] : []),
-
-          /**
-           * Horizontal flip
-           */
-          ...(this.options.flip &&
-          (this.options.flip === Flip.Horizontal || this.options.flip === Flip.Both)
-            ? ['--hflip']
-            : []),
-
-          /**
-           * Vertical flip
-           */
-          ...(this.options.flip &&
-          (this.options.flip === Flip.Vertical || this.options.flip === Flip.Both)
-            ? ['--vflip']
-            : []),
+          ...getSharedArgs(this.options),
 
           /**
            * Bit rate

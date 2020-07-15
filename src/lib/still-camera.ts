@@ -1,6 +1,7 @@
 import * as si from 'systeminformation';
-import { Flip, Rotation } from '..';
+import { AwbMode, ExposureMode, Flip, Rotation } from '..';
 import { spawnPromise } from '../util';
+import { getSharedArgs } from './shared-args';
 
 export interface StillOptions {
   width?: number;
@@ -8,6 +9,13 @@ export interface StillOptions {
   rotation?: Rotation;
   flip?: Flip;
   delay?: number;
+  shutter?: number;
+  iso?: number;
+  exposureCompensation?: number;
+  exposureMode?: ExposureMode;
+  awbMode?: AwbMode;
+  analogGain?: number;
+  digitalGain?: number;
 }
 
 export default class StillCamera {
@@ -42,35 +50,9 @@ export default class StillCamera {
     try {
       return await spawnPromise('raspistill', [
         /**
-         * Width
+         * Add the command-line arguments that are common to both `raspivid` and `raspistill`
          */
-        ...(this.options.width ? ['--width', this.options.width.toString()] : []),
-
-        /**
-         * Height
-         */
-        ...(this.options.height ? ['--height', this.options.height.toString()] : []),
-
-        /**
-         * Rotation
-         */
-        ...(this.options.rotation ? ['--rotation', this.options.rotation.toString()] : []),
-
-        /**
-         * Horizontal flip
-         */
-        ...(this.options.flip &&
-        (this.options.flip === Flip.Horizontal || this.options.flip === Flip.Both)
-          ? ['--hflip']
-          : []),
-
-        /**
-         * Vertical flip
-         */
-        ...(this.options.flip &&
-        (this.options.flip === Flip.Vertical || this.options.flip === Flip.Both)
-          ? ['--vflip']
-          : []),
+        ...getSharedArgs(this.options),
 
         /**
          * Capture delay (ms)
