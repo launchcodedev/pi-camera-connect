@@ -361,44 +361,6 @@ Image flip options.
 import { Flip } from "pi-camera-connect";
 ```
 
-## `ExposureMode`
-Exposure mode options.
-- `ExposureMode.Off`
-- `ExposureMode.Auto`
-- `ExposureMode.Night`
-- `ExposureMode.NightPreview`
-- `ExposureMode.Backlight`
-- `ExposureMode.Spotlight`
-- `ExposureMode.Sports`
-- `ExposureMode.Snow`
-- `ExposureMode.Beach`
-- `ExposureMode.VeryLong`
-- `ExposureMode.FixedFps`
-- `ExposureMode.AntiShake`
-- `ExposureMode.Fireworks`
-
-```javascript
-import { ExposureMode } from "pi-camera-connect";
-```
-
-## `AwbMode`
-White balance mode options.
-- `AwbMode.Off`
-- `AwbMode.Auto`
-- `AwbMode.Sun`
-- `AwbMode.Cloud`
-- `AwbMode.Shade`
-- `AwbMode.Tungsten`
-- `AwbMode.Fluorescent`
-- `AwbMode.Incandescent`
-- `AwbMode.Flash`
-- `AwbMode.Horizon`
-- `AwbMode.GreyWorld`
-
-```javascript
-import { AwbMode } from "pi-camera-connect";
-```
-
 ## `Codec`
 Stream codec options.
 - `Codec.H264`
@@ -451,3 +413,42 @@ These are slightly different depending on the version of Raspberry Pi camera you
 |    5 | 1640x922            | 16:9         | 0.1-40fps   | Full    | 2x2     |
 |    6 | 1280x720            | 16:9         | 40-90fps    | Partial | 2x2     |
 |    7 | 640x480             | 4:3          | 40-90fps    | Partial | 2x2     |
+
+
+## `ExposureMode`
+Exposure mode options.
+- `ExposureMode.Off`
+- `ExposureMode.Auto`
+- `ExposureMode.Night`
+- `ExposureMode.NightPreview`
+- `ExposureMode.Backlight`
+- `ExposureMode.Spotlight`
+- `ExposureMode.Sports`
+- `ExposureMode.Snow`
+- `ExposureMode.Beach`
+- `ExposureMode.VeryLong`
+- `ExposureMode.FixedFps`
+- `ExposureMode.AntiShake`
+- `ExposureMode.Fireworks`
+
+```javascript
+import { ExposureMode } from "pi-camera-connect";
+```
+
+## `AwbMode`
+White balance mode options.
+- `AwbMode.Off`
+- `AwbMode.Auto`
+- `AwbMode.Sun`
+- `AwbMode.Cloud`
+- `AwbMode.Shade`
+- `AwbMode.Tungsten`
+- `AwbMode.Fluorescent`
+- `AwbMode.Incandescent`
+- `AwbMode.Flash`
+- `AwbMode.Horizon`
+- `AwbMode.GreyWorld`
+
+```javascript
+import { AwbMode } from "pi-camera-connect";
+```
