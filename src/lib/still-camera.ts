@@ -14,8 +14,8 @@ export interface StillOptions {
   exposureCompensation?: number;
   exposureMode?: ExposureMode;
   awbMode?: AwbMode;
-  analoggain?: number;
-  digitalgain?: number;
+  analogGain?: number;
+  digitalGain?: number;
 }
 
 export default class StillCamera {

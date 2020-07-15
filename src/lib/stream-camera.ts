@@ -35,8 +35,8 @@ export interface StreamOptions {
   exposureCompensation?: number;
   exposureMode?: ExposureMode;
   awbMode?: AwbMode;
-  analoggain?: number;
-  digitalgain?: number;
+  analogGain?: number;
+  digitalGain?: number;
 }
 
 declare interface StreamCamera {

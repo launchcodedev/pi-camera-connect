@@ -219,6 +219,8 @@ Note that this example produces a raw H264 video. Wrapping it in a video contain
 - [`Flip`](#flip)
 - [`Codec`](#codec)
 - [`SensorMode`](#sensormode)
+- [`ExposureMode`](#exposuremode)
+- [`AwbMode`](#awbmode)
 
 ## `StillCamera`
 A class for taking still images. Equivalent to running the `raspistill` command.
@@ -244,8 +246,8 @@ const stillCamera = new StillCamera({
 - `exposureCompensation: number` - *Default: `0`*
 - [`exposureMode: ExposureMode`](#exposuremode) - *Default: Auto*
 - [`awbMode: AwbMode`](#awbmode) - *Default: Auto*
-- `analoggain: number` - *Default: 0*
-- `digitalgain: number` - *Default: 0*
+- `analogGain: number` - *Default: 0*
+- `digitalGain: number` - *Default: 0*
 
 ### `StillCamera.takeImage(): Promise<Buffer>`
 
@@ -283,8 +285,8 @@ const streamCamera = new StreamCamera({
 - `exposureCompensation: number` - *Default: `0`*
 - [`exposureMode: ExposureMode`](#exposuremode) - *Default: Auto*
 - [`awbMode: AwbMode`](#awbmode) - *Default: Auto*
-- `analoggain: number` - *Default: 0*
-- `digitalgain: number` - *Default: 0*
+- `analogGain: number` - *Default: 0*
+- `digitalGain: number` - *Default: 0*
 
 ### `startCapture(): Promise<void>`
 Begins the camera stream. Returns a `Promise` that is resolved when the capture has started.
@@ -381,17 +383,17 @@ import { ExposureMode } from "pi-camera-connect";
 
 ## `AwbMode`
 White balance mode options.
-- `Off`
-- `Auto`
-- `Sun`
-- `Cloud`
-- `Shade`
-- `Tungsten`
-- `Fluorescent`
-- `Incandescent`
-- `Flash`
-- `Horizon`
-- `GreyWorld`
+- `Awb.Off`
+- `Awb.Auto`
+- `Awb.Sun`
+- `Awb.Cloud`
+- `Awb.Shade`
+- `Awb.Tungsten`
+- `Awb.Fluorescent`
+- `Awb.Incandescent`
+- `Awb.Flash`
+- `Awb.Horizon`
+- `Awb.GreyWorld`
 
 ```javascript
 import { AwbMode } from "pi-camera-connect";

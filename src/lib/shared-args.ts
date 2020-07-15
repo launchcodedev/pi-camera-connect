@@ -71,11 +71,11 @@ export function getSharedArgs(options: StillOptions | StreamOptions): string[] {
     /**
      * Analog Gain
      */
-    ...(options.analoggain ? ['--analoggain', options.analoggain.toString()] : []),
+    ...(options.analogGain ? ['--analoggain', options.analogGain.toString()] : []),
 
     /**
      * Digital Gain
      */
-    ...(options.digitalgain ? ['--digitalgain', options.digitalgain.toString()] : [])
+    ...(options.digitalGain ? ['--digitalgain', options.digitalGain.toString()] : [])
   ];
 }
