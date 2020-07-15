@@ -383,17 +383,17 @@ import { ExposureMode } from "pi-camera-connect";
 
 ## `AwbMode`
 White balance mode options.
-- `Awb.Off`
-- `Awb.Auto`
-- `Awb.Sun`
-- `Awb.Cloud`
-- `Awb.Shade`
-- `Awb.Tungsten`
-- `Awb.Fluorescent`
-- `Awb.Incandescent`
-- `Awb.Flash`
-- `Awb.Horizon`
-- `Awb.GreyWorld`
+- `AwbMode.Off`
+- `AwbMode.Auto`
+- `AwbMode.Sun`
+- `AwbMode.Cloud`
+- `AwbMode.Shade`
+- `AwbMode.Tungsten`
+- `AwbMode.Fluorescent`
+- `AwbMode.Incandescent`
+- `AwbMode.Flash`
+- `AwbMode.Horizon`
+- `AwbMode.GreyWorld`
 
 ```javascript
 import { AwbMode } from "pi-camera-connect";
