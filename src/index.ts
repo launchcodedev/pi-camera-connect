@@ -28,7 +28,7 @@ export enum ExposureMode {
   VeryLong = 'verylong',
   FixedFps = 'fixedfps',
   AntiShake = 'antishake',
-  Fireworks = 'fireworks'
+  Fireworks = 'fireworks',
 }
 
 export enum AwbMode {
@@ -42,5 +42,5 @@ export enum AwbMode {
   Incandescent = 'incandescent',
   Flash = 'flash',
   Horizon = 'horizon',
-  GreyWorld = 'greyworld'
+  GreyWorld = 'greyworld',
 }

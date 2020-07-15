@@ -1,5 +1,5 @@
-import { StillOptions } from "./still-camera";
-import { StreamOptions } from "./stream-camera";
+import { StillOptions } from './still-camera';
+import { StreamOptions } from './stream-camera';
 import { Flip } from '..';
 
 /**
@@ -11,7 +11,6 @@ import { Flip } from '..';
  */
 export function getSharedArgs(options: StillOptions | StreamOptions): string[] {
   return [
-
     /**
      * Width
      */
@@ -30,23 +29,21 @@ export function getSharedArgs(options: StillOptions | StreamOptions): string[] {
     /**
      * Horizontal flip
      */
-    ...(options.flip &&
-    (options.flip === Flip.Horizontal || options.flip === Flip.Both)
+    ...(options.flip && (options.flip === Flip.Horizontal || options.flip === Flip.Both)
       ? ['--hflip']
       : []),
 
     /**
      * Vertical flip
      */
-    ...(options.flip &&
-    (options.flip === Flip.Vertical || options.flip === Flip.Both)
+    ...(options.flip && (options.flip === Flip.Vertical || options.flip === Flip.Both)
       ? ['--vflip']
       : []),
 
     /**
      * Shutter Speed
      */
-    ...(options.shutter ? ["--shutter", options.shutter.toString()] : []),
+    ...(options.shutter ? ['--shutter', options.shutter.toString()] : []),
 
     /**
      * ISO
@@ -76,6 +73,6 @@ export function getSharedArgs(options: StillOptions | StreamOptions): string[] {
     /**
      * Digital Gain
      */
-    ...(options.digitalGain ? ['--digitalgain', options.digitalGain.toString()] : [])
+    ...(options.digitalGain ? ['--digitalgain', options.digitalGain.toString()] : []),
   ];
 }
