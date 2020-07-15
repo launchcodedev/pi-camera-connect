@@ -12,7 +12,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/servall/pi-camera-connect"
+    "url": "https://github.com/launchcodedev/pi-camera-connect"
   },
   "scripts": {
     "build": "tsc -b",
