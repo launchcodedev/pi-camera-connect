@@ -5,8 +5,6 @@ import { Flip } from '..';
 /**
  * Get the command line arguments for `raspistill` or `raspivid` that are common among both
  *
- * These are: `--width`, `--height`, `--rotation`, `--hflip`, `--vflip`, `--shutter`,
- * `--ISO`, `--exposure`, `--ev`, and `--awb`
  * @param options Camera options
  */
 export function getSharedArgs(options: StillOptions | StreamOptions): string[] {
