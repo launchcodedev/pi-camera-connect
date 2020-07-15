@@ -341,9 +341,9 @@
     chalk "^3.0.0"
 
 "@lcdev/eslint-config@0.2":
-  version "0.2.4"
-  resolved "https://npm.servalldatasystems.com/@lcdev%2feslint-config/-/eslint-config-0.2.4.tgz#adaebe78f4c183226d550c0823150ab79fe2031c"
-  integrity sha512-LGV68BM1gJE5y9a7Gtf2N11XV9CNdgFnapf1kNQ9hUgoJS94+UcwSYZESaJESukt6tk5UibedIu4QFL4Y6ORTw==
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@lcdev/eslint-config/-/eslint-config-0.2.3.tgz#ff794e28805533d5ef9988b3a40c16c9e7c259db"
+  integrity sha512-G3m16p/ZW61hbVMWMlSb0dWn1v3D97ighhlvQc5BYlUieiKsPgNxv/1T5Hg/jtGA4YJvIlrw/CLQCsyWpZ7S4Q==
   dependencies:
     "@typescript-eslint/eslint-plugin" "2"
     "@typescript-eslint/parser" "2"
@@ -358,21 +358,21 @@
     eslint-plugin-react-hooks "1.7"
 
 "@lcdev/jest@0.2":
-  version "0.2.0"
-  resolved "https://npm.servalldatasystems.com/@lcdev%2fjest/-/jest-0.2.0.tgz#12b292903513a30adc96db6b645c38759bc47b80"
-  integrity sha512-t+HDdNmn1B1oohx4zig0/VWAvZ3017isDoHlnBo/OSlNcov/QK1etKY0572A/m/ba0wuXYmt1WH5BUd/mHsctg==
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@lcdev/jest/-/jest-0.2.1.tgz#3afb3961bdb7ed9482941c78aa6acd22ff4068e0"
+  integrity sha512-b+Plx2GakVWWbt6a2ak5o/HJmW6pvQg51PkdFHFs/xTxfN0VftS5dA1vLmVvI6fos1yBGDGBhBy5O+zQn14a8Q==
   dependencies:
     ts-jest "25"
 
 "@lcdev/prettier@0.1":
   version "0.1.2"
-  resolved "https://npm.servalldatasystems.com/@lcdev%2fprettier/-/prettier-0.1.2.tgz#4c48c7fcb7f5e4e7f120dec832908f13758374f7"
-  integrity sha512-ySYMyuzCpujk3YSeLJ5xkB/8nx69z2HNMYvjCpQr/xSIfPVhWIH9/sLHCFZsWgJO+rfmHjSg2hvFqNHurtG6dA==
+  resolved "https://registry.yarnpkg.com/@lcdev/prettier/-/prettier-0.1.2.tgz#169396347de8aaded7bbea1fba1edb7af88ec46d"
+  integrity sha512-Xhx4jy296lc+/9dFB9qPNy5qAEh53rg2W/rCtedeBgVhaqCJfn6M23KjH1ZcZD9n1qq01c2759rS5e/Xd0tMUA==
 
 "@lcdev/tsconfig@0.1":
-  version "0.1.1"
-  resolved "https://npm.servalldatasystems.com/@lcdev%2ftsconfig/-/tsconfig-0.1.1.tgz#a1c08090e31919d5d7a69fd3aac3e0a50c3ec463"
-  integrity sha512-Z8q/i10d4YHaft7wjYQMucqvlNvrXebMa6SLyc0hZ7t1p/7nRAPfFS7h74ql2g7pbivkzcpTpfxolHtFSewvpQ==
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@lcdev/tsconfig/-/tsconfig-0.1.3.tgz#e5b665edb4f555f0052e652eb7a9a6f2d0e42169"
+  integrity sha512-GSCGxMXfnpjvpT0r1rC3ku7HVbUPui/SSulq94qDh88Zi1QoJ/FAYf6+zzP7YEYJdK8/nluCUohpZOdLN4UFKw==
 
 "@sinonjs/commons@^1.7.0":
   version "1.7.1"
