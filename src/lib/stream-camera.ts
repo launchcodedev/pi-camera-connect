@@ -31,6 +31,10 @@ export interface StreamOptions {
   codec?: Codec;
   sensorMode?: SensorMode;
   shutter?: number;
+  sharpness?: number;
+  contrast?: number;
+  brightness?: number;
+  saturation?: number;
   iso?: number;
   exposureCompensation?: number;
   exposureMode?: ExposureMode;
