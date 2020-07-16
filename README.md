@@ -242,6 +242,10 @@ const stillCamera = new StillCamera({
 - [`flip: Flip`](#flip) - *Default: `Flip.None`*
 - `delay: number` - *Default: 1 ms*
 - `shutter: number` - *Default: Auto calculated based on framerate (1000000µs/fps). Number is in microseconds*
+- `sharpness: number` - *Range: `-100`-`100`; Default: `0`*
+- `contrast: number` - *Range: `-100`-`100`; Default: `0`*
+- `brightness: number` - *Range: `0`-`100`; Default: `50`*
+- `saturation: number` - *Range: `-100`-`100`; Default: `0`*
 - `iso: number` - *Default: Auto*
 - `exposureCompensation: number` - *Default: `0`*
 - [`exposureMode: ExposureMode`](#exposuremode) - *Default: Auto*
@@ -281,6 +285,10 @@ const streamCamera = new StreamCamera({
 - [`codec: Codec`](#codec) - *Default: `Codec.H264`*
 - [`sensorMode: SensorMode`](#sensormode) - *Default: `SensorMode.AutoSelect`*
 - `shutter: number` - *Default: Auto calculated based on framerate (1000000µs/fps). Number is in microseconds*
+- `sharpness: number` - *Range: `-100`-`100`; Default: `0`*
+- `contrast: number` - *Range: `-100`-`100`; Default: `0`*
+- `brightness: number` - *Range: `0`-`100`; Default: `50`*
+- `saturation: number` - *Range: `-100`-`100`; Default: `0`*
 - `iso: number` - *Default: Auto*
 - `exposureCompensation: number` - *Default: `0`*
 - [`exposureMode: ExposureMode`](#exposuremode) - *Default: Auto*

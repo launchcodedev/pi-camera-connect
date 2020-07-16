@@ -44,6 +44,26 @@ export function getSharedArgs(options: StillOptions | StreamOptions): string[] {
     ...(options.shutter ? ['--shutter', options.shutter.toString()] : []),
 
     /**
+     * Sharpness (-100 to 100; default 0)
+     */
+    ...(options.sharpness ? ['--sharpness', options.sharpness.toString()] : []),
+
+    /**
+     * Contrast (-100 to 100; default 0)
+     */
+    ...(options.contrast ? ['--contrast', options.contrast.toString()] : []),
+
+    /**
+     * Brightness (0 to 100; default 50)
+     */
+    ...((options.brightness || options.brightness === 0) ? ['--brightness', options.brightness.toString()] : []),
+
+    /**
+     * Saturation (-100 to 100; default 0)
+     */
+    ...(options.saturation ? ['--saturation', options.saturation.toString()] : []),
+
+    /**
      * ISO
      */
     ...(options.iso ? ['--ISO', options.iso.toString()] : []),
