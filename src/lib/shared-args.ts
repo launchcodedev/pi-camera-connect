@@ -56,7 +56,9 @@ export function getSharedArgs(options: StillOptions | StreamOptions): string[] {
     /**
      * Brightness (0 to 100; default 50)
      */
-    ...((options.brightness || options.brightness === 0) ? ['--brightness', options.brightness.toString()] : []),
+    ...(options.brightness || options.brightness === 0
+      ? ['--brightness', options.brightness.toString()]
+      : []),
 
     /**
      * Saturation (-100 to 100; default 0)
