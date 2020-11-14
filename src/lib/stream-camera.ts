@@ -73,6 +73,7 @@ class StreamCamera extends EventEmitter {
       case 'BCM2711':
       case 'BCM2835 - Pi 3 Model B':
       case 'BCM2835 - Pi 3 Model B+':
+      case 'Raspberry Pi 3 Model B Plus Rev 1.3':
       case 'BCM2835 - Pi 4 Model B':
       case 'BCM2835 - Pi Zero':
       case 'BCM2835 - Pi Zero W':
