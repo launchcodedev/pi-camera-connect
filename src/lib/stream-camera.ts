@@ -69,19 +69,21 @@ class StreamCamera extends EventEmitter {
 
   static async getJpegSignature() {
     const systemInfo = await si.system();
-    switch (systemInfo.model) {
-      case 'BCM2711':
-      case 'BCM2835 - Pi 3 Model B':
-      case 'BCM2835 - Pi 3 Model B+':
-      case 'BCM2835 - Pi 4 Model B':
-      case 'BCM2835 - Pi Zero':
-      case 'BCM2835 - Pi Zero W':
-        return Buffer.from([0xff, 0xd8, 0xff, 0xdb, 0x00, 0x84, 0x00]);
-      default:
-        throw new Error(
-          `Could not determine JPEG signature. Unknown system model '${systemInfo.model}'`,
-        );
+    const { processor, type } = systemInfo.raspberry || {};
+    // note: we check both BCM and BMC, as systemInfo lib seems to sometimes return BMC for now
+    if (
+      ['BCM2711', 'BMC2711'].indexOf(processor) >= 0
+      || (
+        ['BCM2835', 'BMC2835'].indexOf(processor) >= 0
+        && ['3B', '3B+', '4B', 'Zero', 'Zero W'].indexOf(type) >= 0
+      )
+    ) {
+      return Buffer.from([0xff, 0xd8, 0xff, 0xdb, 0x00, 0x84, 0x00]);
     }
+
+    throw new Error(
+      `Could not determine JPEG signature. Unknown system model '${processor} - ${type}'`,
+    );
   }
 
   startCapture(): Promise<void> {
