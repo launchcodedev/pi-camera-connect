@@ -38,6 +38,7 @@ export default class StillCamera {
     const systemInfo = await si.system();
     switch (systemInfo.model) {
       case 'BCM2711':
+	  case 'BCM2835':
       case 'BCM2835 - Pi 3 Model B':
       case 'BCM2835 - Pi 3 Model B+':
       case 'BCM2835 - Pi 4 Model B':
