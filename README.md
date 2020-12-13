@@ -17,11 +17,15 @@ There are many NPM modules for connecting to the Raspberry Pi camera, why use th
 - **Structure**: Ships with TypeScript definition files
 
 ## Install
+
 NPM
+
 ```
 $ npm install --save pi-camera-connect
 ```
+
 Yarn
+
 ```
 $ yarn add pi-camera-connect
 ```
@@ -31,46 +35,46 @@ $ yarn add pi-camera-connect
 ### ESNext Syntax
 
 Image capture:
+
 ```javascript
-import { StillCamera } from "pi-camera-connect";
-import * as fs from "fs";
+import { StillCamera } from 'pi-camera-connect';
+import * as fs from 'fs';
 
 // Take still image and save to disk
 const runApp = async () => {
+  const stillCamera = new StillCamera();
 
-    const stillCamera = new StillCamera();
+  const image = await stillCamera.takeImage();
 
-    const image = await stillCamera.takeImage();
-
-    fs.writeFileSync("still-image.jpg", image);
+  fs.writeFileSync('still-image.jpg', image);
 };
 
 runApp();
 ```
 
 Video capture:
+
 ```javascript
-import { StreamCamera, Codec } from "pi-camera-connect";
-import * as fs from "fs";
+import { StreamCamera, Codec } from 'pi-camera-connect';
+import * as fs from 'fs';
 
 // Capture 5 seconds of H264 video and save to disk
 const runApp = async () => {
+  const streamCamera = new StreamCamera({
+    codec: Codec.H264,
+  });
 
-    const streamCamera = new StreamCamera({
-        codec: Codec.H264
-    });
+  const videoStream = streamCamera.createStream();
 
-    const videoStream = streamCamera.createStream();
+  const writeStream = fs.createWriteStream('video-stream.h264');
 
-    const writeStream = fs.createWriteStream("video-stream.h264");
+  videoStream.pipe(writeStream);
 
-    videoStream.pipe(writeStream);
+  await streamCamera.startCapture();
 
-    await streamCamera.startCapture();
-    
-    await new Promise(resolve => setTimeout(() => resolve(), 5000));
+  await new Promise(resolve => setTimeout(() => resolve(), 5000));
 
-    await streamCamera.stopCapture();
+  await streamCamera.stopCapture();
 };
 
 runApp();
@@ -79,142 +83,147 @@ runApp();
 ### Compatible Syntax
 
 Image capture:
+
 ```javascript
-const { StillCamera } = require("pi-camera-connect");
+const { StillCamera } = require('pi-camera-connect');
 
 const stillCamera = new StillCamera();
 
 stillCamera.takeImage().then(image => {
-
-    fs.writeFileSync("still-image.jpg", image);
+  fs.writeFileSync('still-image.jpg', image);
 });
 ```
 
 Video capture:
+
 ```javascript
-const { StreamCamera, Codec } = require("pi-camera-connect");
+const { StreamCamera, Codec } = require('pi-camera-connect');
 
 const streamCamera = new StreamCamera({
-    codec: Codec.H264
+  codec: Codec.H264,
 });
 
-const writeStream = fs.createWriteStream("video-stream.h264");
+const writeStream = fs.createWriteStream('video-stream.h264');
 
 const videoStream = streamCamera.createStream();
 
 videoStream.pipe(writeStream);
 
 streamCamera.startCapture().then(() => {
-
-    setTimeout(() => streamCamera.stopCapture(), 5000);
+  setTimeout(() => streamCamera.stopCapture(), 5000);
 });
 ```
 
 ## Capturing an image
+
 There are 2 ways to capture an image with `pi-camera-connect`:
-1. `StillCamera.takeImage()` - *Slow, but higher quality*
-    
-    This is equivalent to running the `raspistill` command. Under the hood, the GPU will run a strong noise reduction algorithm to make the image appear higher quality.
 
-    ```javascript
-    import { StillCamera } from "pi-camera-connect";
+1. `StillCamera.takeImage()` - _Slow, but higher quality_
 
-    const runApp = async () => {
+   This is equivalent to running the `raspistill` command. Under the hood, the GPU will run a strong noise reduction algorithm to make the image appear higher quality.
 
-        const stillCamera = new StillCamera();
+   ```javascript
+   import { StillCamera } from 'pi-camera-connect';
 
-        const image = await stillCamera.takeImage();
+   const runApp = async () => {
+     const stillCamera = new StillCamera();
 
-        // Process image...
-    };
+     const image = await stillCamera.takeImage();
 
-    runApp();
-    ```
+     // Process image...
+   };
 
-2. `StreamCamera.takeImage()` - *Fast, but lower quality*
+   runApp();
+   ```
 
-    This works by grabbing a single JPEG frame from a Motion JPEG (MJPEG) video stream . Images captured from the video port tend to have a grainier appearance due to the lack of a strong noise reduction algorithm. 
-    
-    Using this method, you can capture a JPEG image at more or less the frame rate of the stream, eg. 30 fps = ~33ms capture times.
+2. `StreamCamera.takeImage()` - _Fast, but lower quality_
 
-    ```javascript
-    import { StreamCamera, Codec } from "pi-camera-connect";
+   This works by grabbing a single JPEG frame from a Motion JPEG (MJPEG) video stream . Images captured from the video port tend to have a grainier appearance due to the lack of a strong noise reduction algorithm.
 
-    const runApp = async () => {
-        
-        const streamCamera = new StreamCamera({
-            codec: Codec.MJPEG
-        });
+   Using this method, you can capture a JPEG image at more or less the frame rate of the stream, eg. 30 fps = ~33ms capture times.
 
-        await streamCamera.startCapture();
+   ```javascript
+   import { StreamCamera, Codec } from 'pi-camera-connect';
 
-        const image = await streamCamera.takeImage();
+   const runApp = async () => {
+     const streamCamera = new StreamCamera({
+       codec: Codec.MJPEG,
+     });
 
-        // Process image...
+     await streamCamera.startCapture();
 
-        await streamCamera.stopCapture();
-    };
+     const image = await streamCamera.takeImage();
 
-    runApp();
-    ```
+     // Process image...
+
+     await streamCamera.stopCapture();
+   };
+
+   runApp();
+   ```
 
 ## Capturing a video stream
+
 Capturing a video stream is easy. There are currently 2 codecs supported: `H264` and `MJPEG`.
 
 ### Why **H264** and **MJPEG**?
+
 The GPU on the Raspberry Pi comes with a hardware-accelerated H264 encoder and JPEG encoder. To capture videos in real time, using these hardware encoders are required.
 
 ### Stream
+
 A standard NodeJS [readable stream](https://nodejs.org/api/stream.html#stream_class_stream_readable) is available after calling `createStream()`. As with any readable stream, it can be piped or listened to.
 
 ```javascript
-import { StreamCamera, Codec } from "pi-camera-connect";
-import * as fs from "fs";
+import { StreamCamera, Codec } from 'pi-camera-connect';
+import * as fs from 'fs';
 
 const runApp = async () => {
+  const streamCamera = new StreamCamera({
+    codec: Codec.H264,
+  });
 
-    const streamCamera = new StreamCamera({
-        codec: Codec.H264
-    });
+  const videoStream = streamCamera.createStream();
 
-    const videoStream = streamCamera.createStream();
+  const writeStream = fs.createWriteStream('video-stream.h264');
 
-    const writeStream = fs.createWriteStream("video-stream.h264");
+  // Pipe the video stream to our video file
+  videoStream.pipe(writeStream);
 
-    // Pipe the video stream to our video file
-    videoStream.pipe(writeStream);
+  await streamCamera.startCapture();
 
-    await streamCamera.startCapture();
+  // We can also listen to data events as they arrive
+  videoStream.on('data', data => console.log('New data', data));
+  videoStream.on('end', data => console.log('Video stream has ended'));
 
-    // We can also listen to data events as they arrive
-    videoStream.on("data", data => console.log("New data", data));
-    videoStream.on("end", data => console.log("Video stream has ended"));
+  // Wait for 5 seconds
+  await new Promise(resolve => setTimeout(() => resolve(), 5000));
 
-    // Wait for 5 seconds
-    await new Promise(resolve => setTimeout(() => resolve(), 5000));
-
-    await streamCamera.stopCapture();
+  await streamCamera.stopCapture();
 };
 
 runApp();
 ```
 
-You can test the video by viewing it in `omxplayer` (ships with the Pi):
+You can test the video by viewing it in `omxplayer` (ships with Raspbian):
+
 ```
 $ omxplayer video-stream.h264
 ```
+
 Note that this example produces a raw H264 video. Wrapping it in a video container (eg. MP4, MKV, etc) is out of the scope of this module.
 
 ## API
+
 - [`StillCamera`](#stillcamera)
-    - `constructor(options?: StillOptions): StillCamera`
-    - `takeImage(): Promise<Buffer>`
+  - `constructor(options?: StillOptions): StillCamera`
+  - `takeImage(): Promise<Buffer>`
 - [`StreamCamera`](#streamcamera)
-    - `constructor(options?: StreamOptions): StreamCamera`
-    - `startCapture(): Promise<void>`
-    - `stopCapture(): Promise<void>`
-    - `createStream(): stream.Readable`
-    - `takeImage(): Promise<Buffer>`
+  - `constructor(options?: StreamOptions): StreamCamera`
+  - `startCapture(): Promise<void>`
+  - `stopCapture(): Promise<void>`
+  - `createStream(): stream.Readable`
+  - `takeImage(): Promise<Buffer>`
 - [`Rotation`](#rotation)
 - [`Flip`](#flip)
 - [`Codec`](#codec)
@@ -223,6 +232,7 @@ Note that this example produces a raw H264 video. Wrapping it in a video contain
 - [`AwbMode`](#awbmode)
 
 ## `StillCamera`
+
 A class for taking still images. Equivalent to running the `raspistill` command.
 
 ### `constructor (options?: StillOptions): StillCamera`
@@ -236,26 +246,28 @@ const stillCamera = new StillCamera({
 ```
 
 `StillOptions` are:
-- `width: number` - *Default: Max sensor width*
-- `height: number` - *Default: Max sensor height*
-- [`rotation: Rotation`](#rotation) - *Default: `Rotation.Rotate0`*
-- [`flip: Flip`](#flip) - *Default: `Flip.None`*
-- `delay: number` - *Default: 1 ms*
-- `shutter: number` - *Default: Auto calculated based on framerate (1000000µs/fps). Number is in microseconds*
-- `sharpness: number` - *Range: `-100`-`100`; Default: `0`*
-- `contrast: number` - *Range: `-100`-`100`; Default: `0`*
-- `brightness: number` - *Range: `0`-`100`; Default: `50`*
-- `saturation: number` - *Range: `-100`-`100`; Default: `0`*
-- `iso: number` - *Default: Auto*
-- `exposureCompensation: number` - *Default: `0`*
-- [`exposureMode: ExposureMode`](#exposuremode) - *Default: Auto*
-- [`awbMode: AwbMode`](#awbmode) - *Default: Auto*
-- `analogGain: number` - *Default: 0*
-- `digitalGain: number` - *Default: 0*
+
+- `width: number` - _Default: Max sensor width_
+- `height: number` - _Default: Max sensor height_
+- [`rotation: Rotation`](#rotation) - _Default: `Rotation.Rotate0`_
+- [`flip: Flip`](#flip) - _Default: `Flip.None`_
+- `delay: number` - _Default: `1` ms_
+- `shutter: number` - _Default: Auto calculated based on framerate (1000000µs/fps). Number is in microseconds_
+- `sharpness: number` - _Range: `-100`-`100`; Default: `0`_
+- `contrast: number` - _Range: `-100`-`100`; Default: `0`_
+- `brightness: number` - _Range: `0`-`100`; Default: `50`_
+- `saturation: number` - _Range: `-100`-`100`; Default: `0`_
+- `iso: number` - _Range: `100`-`800`; Default: Auto_
+- `exposureCompensation: number` - _Range: `-10`-`10`; Default: `0`_
+- [`exposureMode: ExposureMode`](#exposuremode) - _Default: `ExposureMode.Auto`_
+- [`awbMode: AwbMode`](#awbmode) - _Default: `AwbMode.Auto`_
+- `analogGain: number` - _Default: `0`_
+- `digitalGain: number` - _Default: `0`_
 
 ### `StillCamera.takeImage(): Promise<Buffer>`
 
 Takes a JPEG image from the camera. Returns a `Promise` with a `Buffer` containing the image bytes.
+
 ```javascript
 const stillCamera = new StillCamera();
 
@@ -263,6 +275,7 @@ const image = await stillCamera.takeImage();
 ```
 
 ## `StreamCamera`
+
 A class for capturing a stream of camera data, either as `H264` or `MJPEG`.
 
 ### `constructor(options?: StreamOptions): StreamCamera`
@@ -276,38 +289,43 @@ const streamCamera = new StreamCamera({
 ```
 
 `StreamOptions` are:
-- `width: number` - *Default: Max sensor width*
-- `height: number` - *Default: Max sensor height*
-- [`rotation: Rotation`](#rotation) - *Default: `Rotation.Rotate0`*
-- [`flip: Flip`](#flip) - *Default: `Flip.None`*
-- `bitRate: number` - *Default: 17 Mbps*
-- `fps: number` - *Default: 30 fps*
-- [`codec: Codec`](#codec) - *Default: `Codec.H264`*
-- [`sensorMode: SensorMode`](#sensormode) - *Default: `SensorMode.AutoSelect`*
-- `shutter: number` - *Default: Auto calculated based on framerate (1000000µs/fps). Number is in microseconds*
-- `sharpness: number` - *Range: `-100`-`100`; Default: `0`*
-- `contrast: number` - *Range: `-100`-`100`; Default: `0`*
-- `brightness: number` - *Range: `0`-`100`; Default: `50`*
-- `saturation: number` - *Range: `-100`-`100`; Default: `0`*
-- `iso: number` - *Default: Auto*
-- `exposureCompensation: number` - *Default: `0`*
-- [`exposureMode: ExposureMode`](#exposuremode) - *Default: Auto*
-- [`awbMode: AwbMode`](#awbmode) - *Default: Auto*
-- `analogGain: number` - *Default: 0*
-- `digitalGain: number` - *Default: 0*
+
+- `width: number` - _Default: Max sensor width_
+- `height: number` - _Default: Max sensor height_
+- [`rotation: Rotation`](#rotation) - _Default: `Rotation.Rotate0`_
+- [`flip: Flip`](#flip) - _Default: `Flip.None`_
+- `bitRate: number` - _Default: `17000000` (17 Mbps)_
+- `fps: number` - _Default: `30` fps_
+- [`codec: Codec`](#codec) - _Default: `Codec.H264`_
+- [`sensorMode: SensorMode`](#sensormode) - _Default: `SensorMode.AutoSelect`_
+- `shutter: number` - _Default: Auto calculated based on framerate (1000000µs/fps). Number is in microseconds_
+- `sharpness: number` - _Range: `-100`-`100`; Default: `0`_
+- `contrast: number` - _Range: `-100`-`100`; Default: `0`_
+- `brightness: number` - _Range: `0`-`100`; Default: `50`_
+- `saturation: number` - _Range: `-100`-`100`; Default: `0`_
+- `iso: number` - _Range: `100`-`800`; Default: Auto_
+- `exposureCompensation: number` - _Range: `-10`-`10`; Default: `0`_
+- [`exposureMode: ExposureMode`](#exposuremode) - _Default: `ExposureMode.Auto`_
+- [`awbMode: AwbMode`](#awbmode) - _Default: `AwbMode.Auto`_
+- `analogGain: number` - _Default: `0`_
+- `digitalGain: number` - _Default: `0`_
 
 ### `startCapture(): Promise<void>`
+
 Begins the camera stream. Returns a `Promise` that is resolved when the capture has started.
 
 ### `stopCapture(): Promise<void>`
+
 Ends the camera stream. Returns a `Promise` that is resolved when the capture has stopped.
 
 ### `createStream(): stream.Readable`
+
 Creates a [`readable stream`](https://nodejs.org/api/stream.html#stream_class_stream_readable) of video data. There is no limit to the number of streams you can create.
 
 Be aware that, as with any readable stream, data will buffer in memory until it is read. If you create a video stream but do not read its data, your program will quickly run out of memory.
 
 Ways to read data so that it does not remain buffered in memory include:
+
 - Switching the stream to 'flowing' mode by calling either `resume()`, `pipe()`, or attaching a listener to the `'data'` event
 - Calling `read()` when the stream is in 'paused' mode
 
@@ -315,14 +333,14 @@ See the [readable stream documentation](https://nodejs.org/api/stream.html#strea
 
 ```javascript
 const streamCamera = new StreamCamera({
-    codec: Codec.H264
+  codec: Codec.H264,
 });
 
 const videoStream = streamCamera.createStream();
 
 await streamCamera.startCapture();
 
-videoStream.on("data", data => console.log("New video data", data));
+videoStream.on('data', data => console.log('New video data', data));
 
 // Wait 5 seconds
 await new Promise(resolve => setTimeout(() => resolve(), 5000));
@@ -334,10 +352,11 @@ await streamCamera.stopCapture();
 
 Takes a JPEG image frame from an MJPEG camera stream, resulting in very fast image captures. Returns a `Promise` with a `Buffer` containing the image bytes.
 
-*Note: `StreamOptions.codec` must be set to `Codec.MJPEG`, otherwise `takeImage()` with throw an error.*
+_Note: `StreamOptions.codec` must be set to `Codec.MJPEG`, otherwise `takeImage()` with throw an error._
+
 ```javascript
 const streamCamera = new StreamCamera({
-    codec: Codec.MJPEG
+  codec: Codec.MJPEG,
 });
 
 await streamCamera.startCapture();
@@ -348,38 +367,46 @@ await streamCamera.stopCapture();
 ```
 
 ## `Rotation`
+
 Image rotation options.
+
 - `Rotation.Rotate0`
 - `Rotation.Rotate90`
 - `Rotation.Rotate180`
 - `Rotation.Rotate270`
 
 ```javascript
-import { Rotation } from "pi-camera-connect";
+import { Rotation } from 'pi-camera-connect';
 ```
 
 ## `Flip`
+
 Image flip options.
+
 - `Flip.None`
 - `Flip.Horizontal`
 - `Flip.Vertical`
 - `Flip.Both`
 
 ```javascript
-import { Flip } from "pi-camera-connect";
+import { Flip } from 'pi-camera-connect';
 ```
 
 ## `Codec`
+
 Stream codec options.
+
 - `Codec.H264`
 - `Codec.MJPEG`
 
 ```javascript
-import { Codec } from "pi-camera-connect";
+import { Codec } from 'pi-camera-connect';
 ```
 
 ## `SensorMode`
+
 Stream sensor mode options.
+
 - `SensorMode.AutoSelect`
 - `SensorMode.Mode1`
 - `SensorMode.Mode2`
@@ -390,41 +417,41 @@ Stream sensor mode options.
 - `SensorMode.Mode7`
 
 ```javascript
-import { SensorMode } from "pi-camera-connect";
+import { SensorMode } from 'pi-camera-connect';
 ```
 
 These are slightly different depending on the version of Raspberry Pi camera you are using.
 
 #### Camera version 1.x (OV5647):
 
-| Mode |        Size         | Aspect Ratio | Frame rates |   FOV   |    Binning    |
-|------|---------------------|--------------|-------------|---------|---------------|
-|    0 | automatic selection |              |             |         |               |
-|    1 | 1920x1080           | 16:9         | 1-30fps     | Partial | None          |
-|    2 | 2592x1944           | 4:3          | 1-15fps     | Full    | None          |
-|    3 | 2592x1944           | 4:3          | 0.1666-1fps | Full    | None          |
-|    4 | 1296x972            | 4:3          | 1-42fps     | Full    | 2x2           |
-|    5 | 1296x730            | 16:9         | 1-49fps     | Full    | 2x2           |
-|    6 | 640x480             | 4:3          | 42.1-60fps  | Full    | 2x2 plus skip |
-|    7 | 640x480             | 4:3          | 60.1-90fps  | Full    | 2x2 plus skip |
-
+| Mode | Size                | Aspect Ratio | Frame rates | FOV     | Binning       |
+| ---- | ------------------- | ------------ | ----------- | ------- | ------------- |
+| 0    | automatic selection |              |             |         |               |
+| 1    | 1920x1080           | 16:9         | 1-30fps     | Partial | None          |
+| 2    | 2592x1944           | 4:3          | 1-15fps     | Full    | None          |
+| 3    | 2592x1944           | 4:3          | 0.1666-1fps | Full    | None          |
+| 4    | 1296x972            | 4:3          | 1-42fps     | Full    | 2x2           |
+| 5    | 1296x730            | 16:9         | 1-49fps     | Full    | 2x2           |
+| 6    | 640x480             | 4:3          | 42.1-60fps  | Full    | 2x2 plus skip |
+| 7    | 640x480             | 4:3          | 60.1-90fps  | Full    | 2x2 plus skip |
 
 #### Camera version 2.x (IMX219):
 
-| Mode |        Size         | Aspect Ratio | Frame rates |   FOV   | Binning |
-|------|---------------------|--------------|-------------|---------|---------|
-|    0 | automatic selection |              |             |         |         |
-|    1 | 1920x1080           | 16:9         | 0.1-30fps   | Partial | None    |
-|    2 | 3280x2464           | 4:3          | 0.1-15fps   | Full    | None    |
-|    3 | 3280x2464           | 4:3          | 0.1-15fps   | Full    | None    |
-|    4 | 1640x1232           | 4:3          | 0.1-40fps   | Full    | 2x2     |
-|    5 | 1640x922            | 16:9         | 0.1-40fps   | Full    | 2x2     |
-|    6 | 1280x720            | 16:9         | 40-90fps    | Partial | 2x2     |
-|    7 | 640x480             | 4:3          | 40-90fps    | Partial | 2x2     |
-
+| Mode | Size                | Aspect Ratio | Frame rates | FOV     | Binning |
+| ---- | ------------------- | ------------ | ----------- | ------- | ------- |
+| 0    | automatic selection |              |             |         |         |
+| 1    | 1920x1080           | 16:9         | 0.1-30fps   | Partial | None    |
+| 2    | 3280x2464           | 4:3          | 0.1-15fps   | Full    | None    |
+| 3    | 3280x2464           | 4:3          | 0.1-15fps   | Full    | None    |
+| 4    | 1640x1232           | 4:3          | 0.1-40fps   | Full    | 2x2     |
+| 5    | 1640x922            | 16:9         | 0.1-40fps   | Full    | 2x2     |
+| 6    | 1280x720            | 16:9         | 40-90fps    | Partial | 2x2     |
+| 7    | 640x480             | 4:3          | 40-90fps    | Partial | 2x2     |
 
 ## `ExposureMode`
+
 Exposure mode options.
+
 - `ExposureMode.Off`
 - `ExposureMode.Auto`
 - `ExposureMode.Night`
@@ -440,11 +467,13 @@ Exposure mode options.
 - `ExposureMode.Fireworks`
 
 ```javascript
-import { ExposureMode } from "pi-camera-connect";
+import { ExposureMode } from 'pi-camera-connect';
 ```
 
 ## `AwbMode`
+
 White balance mode options.
+
 - `AwbMode.Off`
 - `AwbMode.Auto`
 - `AwbMode.Sun`
@@ -458,5 +487,5 @@ White balance mode options.
 - `AwbMode.GreyWorld`
 
 ```javascript
-import { AwbMode } from "pi-camera-connect";
+import { AwbMode } from 'pi-camera-connect';
 ```
