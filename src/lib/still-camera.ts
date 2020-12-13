@@ -1,4 +1,3 @@
-import * as si from 'systeminformation';
 import { AwbMode, ExposureMode, Flip, Rotation } from '..';
 import { spawnPromise } from '../util';
 import { getSharedArgs } from './shared-args';
@@ -25,6 +24,8 @@ export interface StillOptions {
 export default class StillCamera {
   private readonly options: StillOptions;
 
+  static readonly jpegSignature = Buffer.from([0xff, 0xd8, 0xff, 0xe1]);
+
   constructor(options: StillOptions = {}) {
     this.options = {
       rotation: Rotation.Rotate0,
@@ -32,23 +33,6 @@ export default class StillCamera {
       delay: 1,
       ...options,
     };
-  }
-
-  static async getJpegSignature() {
-    const systemInfo = await si.system();
-    switch (systemInfo.model) {
-      case 'BCM2711':
-      case 'BCM2835 - Pi 3 Model B':
-      case 'BCM2835 - Pi 3 Model B+':
-      case 'BCM2835 - Pi 4 Model B':
-      case 'BCM2835 - Pi Zero':
-      case 'BCM2835 - Pi Zero W':
-        return Buffer.from([0xff, 0xd8, 0xff, 0xe1]);
-      default:
-        throw new Error(
-          `Could not determine JPEG signature. Unknown system model '${systemInfo.model}'`,
-        );
-    }
   }
 
   async takeImage() {

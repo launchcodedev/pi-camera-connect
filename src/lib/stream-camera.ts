@@ -1,7 +1,6 @@
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 import { EventEmitter } from 'events';
 import * as stream from 'stream';
-import * as si from 'systeminformation';
 import { AwbMode, ExposureMode, Flip, Rotation } from '..';
 import { getSharedArgs } from './shared-args';
 
@@ -53,6 +52,8 @@ class StreamCamera extends EventEmitter {
   private childProcess?: ChildProcessWithoutNullStreams;
   private streams: Array<stream.Readable> = [];
 
+  static readonly jpegSignature = Buffer.from([0xff, 0xd8, 0xff, 0xdb, 0x00, 0x84, 0x00]);
+
   constructor(options: StreamOptions = {}) {
     super();
 
@@ -65,23 +66,6 @@ class StreamCamera extends EventEmitter {
       sensorMode: SensorMode.AutoSelect,
       ...options,
     };
-  }
-
-  static async getJpegSignature() {
-    const systemInfo = await si.system();
-    switch (systemInfo.model) {
-      case 'BCM2711':
-      case 'BCM2835 - Pi 3 Model B':
-      case 'BCM2835 - Pi 3 Model B+':
-      case 'BCM2835 - Pi 4 Model B':
-      case 'BCM2835 - Pi Zero':
-      case 'BCM2835 - Pi Zero W':
-        return Buffer.from([0xff, 0xd8, 0xff, 0xdb, 0x00, 0x84, 0x00]);
-      default:
-        throw new Error(
-          `Could not determine JPEG signature. Unknown system model '${systemInfo.model}'`,
-        );
-    }
   }
 
   startCapture(): Promise<void> {
@@ -183,7 +167,6 @@ class StreamCamera extends EventEmitter {
         // Wait for first data event to resolve promise
         this.childProcess.stdout.once('data', () => resolve());
 
-        const jpegSignature = await StreamCamera.getJpegSignature();
         let stdoutBuffer = Buffer.alloc(0);
 
         // Listen for image data events and parse MJPEG frames if codec is MJPEG
@@ -196,14 +179,17 @@ class StreamCamera extends EventEmitter {
 
           // Extract all image frames from the current buffer
           while (true) {
-            const signatureIndex = stdoutBuffer.indexOf(jpegSignature, 0);
+            const signatureIndex = stdoutBuffer.indexOf(StreamCamera.jpegSignature, 0);
 
             if (signatureIndex === -1) break;
 
             // Make sure the signature starts at the beginning of the buffer
             if (signatureIndex > 0) stdoutBuffer = stdoutBuffer.slice(signatureIndex);
 
-            const nextSignatureIndex = stdoutBuffer.indexOf(jpegSignature, jpegSignature.length);
+            const nextSignatureIndex = stdoutBuffer.indexOf(
+              StreamCamera.jpegSignature,
+              StreamCamera.jpegSignature.length,
+            );
 
             if (nextSignatureIndex === -1) break;
 

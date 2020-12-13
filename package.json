@@ -22,9 +22,7 @@
     "test": "jest --runInBand",
     "prepublishOnly": "yarn clean && yarn build"
   },
-  "dependencies": {
-    "systeminformation": "4"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@lcdev/eslint-config": "0.2",
     "@lcdev/jest": "0.2",
