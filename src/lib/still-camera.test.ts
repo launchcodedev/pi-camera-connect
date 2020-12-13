@@ -5,5 +5,5 @@ test('takeImage() returns JPEG', async () => {
 
   const jpegImage = await stillCamera.takeImage();
 
-  expect(jpegImage.indexOf(await StillCamera.getJpegSignature())).toBe(0);
+  expect(jpegImage.indexOf(StillCamera.jpegSignature)).toBe(0);
 });
