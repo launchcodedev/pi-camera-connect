@@ -19,6 +19,7 @@ export interface StillOptions {
   awbMode?: AwbMode;
   analogGain?: number;
   digitalGain?: number;
+  annotate?: (number | string)[];
 }
 
 export default class StillCamera {

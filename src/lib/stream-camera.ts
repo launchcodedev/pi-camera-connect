@@ -40,6 +40,7 @@ export interface StreamOptions {
   awbMode?: AwbMode;
   analogGain?: number;
   digitalGain?: number;
+  annotate?: (number | string)[];
 }
 
 declare interface StreamCamera {

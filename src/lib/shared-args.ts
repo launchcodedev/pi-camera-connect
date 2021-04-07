@@ -3,6 +3,22 @@ import { StreamOptions } from './stream-camera';
 import { Flip } from '..';
 
 /**
+ * Generates the annotate command line arguments
+ *
+ * @param annotate Annotate option array
+ */
+function generateAnnotate(annotate: (number | string)[]): string[] {
+  const argumentsArray: string[] = [];
+
+  for (const element of annotate) {
+    argumentsArray.push('--annotate');
+    argumentsArray.push(typeof element === 'number' ? element.toString() : element);
+  }
+
+  return argumentsArray;
+}
+
+/**
  * Get the command line arguments for `raspistill` or `raspivid` that are common among both
  *
  * @param options Camera options
@@ -94,5 +110,10 @@ export function getSharedArgs(options: StillOptions | StreamOptions): string[] {
      * Digital Gain
      */
     ...(options.digitalGain ? ['--digitalgain', options.digitalGain.toString()] : []),
+
+    /**
+     * Annotate
+     */
+    ...(options.annotate ? generateAnnotate(options.annotate) : []),
   ];
 }
