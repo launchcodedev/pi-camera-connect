@@ -94,5 +94,25 @@ export function getSharedArgs(options: StillOptions | StreamOptions): string[] {
      * Digital Gain
      */
     ...(options.digitalGain ? ['--digitalgain', options.digitalGain.toString()] : []),
+
+    /**
+     * Image Effect
+     */
+    ...(options.imageEffect ? ['--imxfx', options.imageEffect.toString()] : []),
+
+    /**
+     * Dynamic Range Control
+     */
+    ...(options.dynamicRange ? ['--drc', options.dynamicRange] : []),
+
+    /**
+     * Colour Effects
+     */
+    ...(options.colourEffect ? ['--colfx', options.colourEffect.join(':')] : []),
+
+    /**
+     * Video Stabilisation
+     */
+    ...(options.videoStabilisation ? ['--vstab'] : []),
   ];
 }

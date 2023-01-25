@@ -1,7 +1,7 @@
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 import { EventEmitter } from 'events';
 import * as stream from 'stream';
-import { AwbMode, ExposureMode, Flip, Rotation } from '..';
+import { AwbMode, DynamicRange, ExposureMode, Flip, ImxfxMode, Rotation } from '..';
 import { getSharedArgs } from './shared-args';
 
 export enum Codec {
@@ -40,6 +40,10 @@ export interface StreamOptions {
   awbMode?: AwbMode;
   analogGain?: number;
   digitalGain?: number;
+  imageEffect?: ImxfxMode;
+  colourEffect?: [number, number]; // U,V
+  dynamicRange?: DynamicRange;
+  videoStabilisation?: boolean;
 }
 
 declare interface StreamCamera {
@@ -226,7 +230,7 @@ class StreamCamera extends EventEmitter {
 
   createStream() {
     const newStream = new stream.Readable({
-      read: () => {},
+      read: () => { },
     });
 
     this.streams.push(newStream);

@@ -44,3 +44,33 @@ export enum AwbMode {
   Horizon = 'horizon',
   GreyWorld = 'greyworld',
 }
+
+export enum ImxfxMode {
+  None = 'none',
+  Negative = 'negative',
+  Solarise = 'solarise',
+  Sketch = 'sketch',
+  Denoise = 'denoise',
+  Emboss = 'emboss',
+  OilPaint = 'oilpaint',
+  Hatch = 'hatch',
+  GPen = 'gpen',
+  Pastel = 'pastel',
+  Watercolour = 'watercolour',
+  Film = 'film',
+  Blur = 'blur',
+  Saturation = 'saturation',
+  ColourSwap = 'colourswap',
+  WashedOut = 'washedout',
+  Posterise = 'posterise',
+  ColourPoint = 'colourpoint',
+  ColourBalance = 'colourbalance',
+  Cartoon = 'cartoon',
+}
+
+export enum DynamicRange {
+  Off = 'off',
+  Low = 'low',
+  Medium = 'medium',
+  High = 'high'
+}

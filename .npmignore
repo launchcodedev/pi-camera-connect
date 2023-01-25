@@ -1,4 +1,5 @@
 src/
+test_images/
 yarn.lock
 
 tsconfig.json

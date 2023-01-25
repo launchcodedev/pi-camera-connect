@@ -1,4 +1,4 @@
-import { AwbMode, ExposureMode, Flip, Rotation } from '..';
+import { AwbMode, DynamicRange, ExposureMode, Flip, ImxfxMode, Rotation } from '..';
 import { spawnPromise } from '../util';
 import { getSharedArgs } from './shared-args';
 
@@ -19,6 +19,12 @@ export interface StillOptions {
   awbMode?: AwbMode;
   analogGain?: number;
   digitalGain?: number;
+  imageEffect?: ImxfxMode;
+  colourEffect?: [number, number]; // U,V
+  dynamicRange?: DynamicRange;
+  videoStabilisation?: boolean;
+  raw?: boolean;
+  quality?: number;
 }
 
 export default class StillCamera {
@@ -48,11 +54,21 @@ export default class StillCamera {
          */
         '--timeout',
         this.options.delay!.toString(),
-
+        
         /**
          * Do not display preview overlay on screen
          */
         '--nopreview',
+
+        /**
+        * RAW (Save Bayer Data)
+        */
+        ...(this.options.raw ? ['--raw'] : []),
+        
+        /**
+         * JPEG Quality
+         */
+        ...(this.options.quality ? ['--quality', this.options.quality.toString()] : []),
 
         /**
          * Output to stdout
