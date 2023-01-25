@@ -230,6 +230,8 @@ Note that this example produces a raw H264 video. Wrapping it in a video contain
 - [`SensorMode`](#sensormode)
 - [`ExposureMode`](#exposuremode)
 - [`AwbMode`](#awbmode)
+- [`DynamicRange`](#dynamicRange)
+- [`ImageEffect`](#imageEffect)
 
 ## `StillCamera`
 
@@ -263,6 +265,12 @@ const stillCamera = new StillCamera({
 - [`awbMode: AwbMode`](#awbmode) - _Default: `AwbMode.Auto`_
 - `analogGain: number` - _Default: `0`_
 - `digitalGain: number` - _Default: `0`_
+- `quality: number` - _Default: `100`_
+- `colourEffect: [number, number]` - _Default: `[0,0]`_
+- [`imageEffect: ImxfxMode`](#imageeffect) - _Default: `ImxfxMode.None`_
+- [`dynamicRange: DynamicRange`](#dynamicrange) - _Default: `DynamicRange.Off`_
+- `videoStabilisation: boolean` - _Default: `false`_
+- `raw: boolean` - _Default: `false`_
 
 ### `StillCamera.takeImage(): Promise<Buffer>`
 
@@ -309,6 +317,10 @@ const streamCamera = new StreamCamera({
 - [`awbMode: AwbMode`](#awbmode) - _Default: `AwbMode.Auto`_
 - `analogGain: number` - _Default: `0`_
 - `digitalGain: number` - _Default: `0`_
+- `colourEffect: [number, number]` - _Default: `[0,0]`_
+- [`imageEffect: ImxfxMode`](#imageeffect) - _Default: `ImxfxMode.None`_
+- [`dynamicRange: DynamicRange`](#dynamicrange) - _Default: `DynamicRange.Off`_
+- `videoStabilisation: boolean` - _Default: `false`_
 
 ### `startCapture(): Promise<void>`
 
@@ -488,4 +500,46 @@ White balance mode options.
 
 ```javascript
 import { AwbMode } from 'pi-camera-connect';
+```
+
+## `ImageEffect`
+
+Image Effect options.
+
+- `ImxfxMode.None`
+- `ImxfxMode.Negative`
+- `ImxfxMode.Solarise`
+- `ImxfxMode.Sketch`
+- `ImxfxMode.Denoise`
+- `ImxfxMode.Emboss`
+- `ImxfxMode.OilPaint`
+- `ImxfxMode.Hatch`
+- `ImxfxMode.GPen`
+- `ImxfxMode.Pastel`
+- `ImxfxMode.Watercolour`
+- `ImxfxMode.Film`
+- `ImxfxMode.Blur`
+- `ImxfxMode.Saturation`
+- `ImxfxMode.ColourSwap`
+- `ImxfxMode.WashedOut`
+- `ImxfxMode.Posterise`
+- `ImxfxMode.ColourPoint`
+- `ImxfxMode.ColourBalance`
+- `ImxfxMode.Cartoon`
+
+```javascript
+import { ImxfxMode } from 'pi-camera-connect';
+```
+
+## `DynamicRange`
+
+Dynamic Range options.
+
+- `DynamicRange.Off`
+- `DynamicRange.Low`
+- `DynamicRange.Medium`
+- `DynamicRange.High`
+
+```javascript
+import { DynamicRange } from 'pi-camera-connect';
 ```
