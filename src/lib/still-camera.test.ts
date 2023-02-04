@@ -10,7 +10,6 @@ if (!fs.existsSync(TEST_IMAGES_DIR)) {
 }
 
 test('takeImage() returns JPEG', async () => {
-
   const t0 = performance.now();
 
   const stillCamera = new StillCamera();

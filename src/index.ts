@@ -72,5 +72,19 @@ export enum DynamicRange {
   Off = 'off',
   Low = 'low',
   Medium = 'medium',
-  High = 'high'
+  High = 'high',
+}
+
+export enum MeteringMode {
+  Average = 'average',
+  Spot = 'spot',
+  Backlit = 'backlit',
+  Matrix = 'matrix',
+}
+
+export enum FlickerMode {
+  Off = 'off',
+  Auto = 'auto',
+  '50hz' = '50hz',
+  '60Hz' = '60hz',
 }
