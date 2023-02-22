@@ -45,7 +45,7 @@ export enum AwbMode {
   GreyWorld = 'greyworld',
 }
 
-export enum ImxfxMode {
+export enum ImageEffectMode {
   None = 'none',
   Negative = 'negative',
   Solarise = 'solarise',
@@ -85,6 +85,6 @@ export enum MeteringMode {
 export enum FlickerMode {
   Off = 'off',
   Auto = 'auto',
-  '50hz' = '50hz',
-  '60Hz' = '60hz',
+  'Frq50hz' = '50hz',
+  'Frq60Hz' = '60hz',
 }

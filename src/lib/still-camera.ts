@@ -4,7 +4,7 @@ import {
   ExposureMode,
   FlickerMode,
   Flip,
-  ImxfxMode,
+  ImageEffectMode,
   MeteringMode,
   Rotation,
 } from '..';
@@ -29,10 +29,10 @@ export interface StillOptions {
   awbGains?: [number, number];
   analogGain?: number;
   digitalGain?: number;
-  imageEffect?: ImxfxMode;
-  colourEffect?: [number, number]; // U,V
+  imageEffect?: ImageEffectMode;
+  colorEffect?: [number, number]; // U,V
   dynamicRange?: DynamicRange;
-  videoStabilisation?: boolean;
+  videoStabilization?: boolean;
   raw?: boolean;
   quality?: number;
   statistics?: boolean;

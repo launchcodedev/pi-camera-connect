@@ -117,12 +117,12 @@ export function getSharedArgs(options: StillOptions | StreamOptions): string[] {
     ...(options.dynamicRange ? ['--drc', options.dynamicRange] : []),
 
     /**
-     * Colour Effects
+     * Color Effects
      * The supplied U and V parameters (range 0 to 255) are applied to
      * the U and Y channels of the image. For example, --colfx 128:128
      * should result in a monochrome image.
      */
-    ...(options.colourEffect ? ['--colfx', options.colourEffect.join(':')] : []),
+    ...(options.colorEffect ? ['--colfx', options.colorEffect.join(':')] : []),
 
     /**
      * Metering
@@ -147,7 +147,7 @@ export function getSharedArgs(options: StillOptions | StreamOptions): string[] {
      * Video Stabilisation
      * In video mode only, turn on video stabilization.
      */
-    ...(options.videoStabilisation ? ['--vstab'] : []),
+    ...(options.videoStabilization ? ['--vstab'] : []),
 
     /**
      * Statistics

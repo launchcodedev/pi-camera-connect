@@ -267,10 +267,10 @@ const stillCamera = new StillCamera({
 - `analogGain: number` - _Default: `0`_
 - `digitalGain: number` - _Default: `0`_
 - `quality: number` - _Default: `100`_
-- `colourEffect: [number, number]` - _Default: `[0,0]`_
-- [`imageEffect: ImxfxMode`](#imageeffect) - _Default: `ImxfxMode.None`_
+- `colorEffect: [number, number]` - _Default: `[0,0]`_
+- [`imageEffect: ImageEffectMode`](#imageeffect) - _Default: `ImageEffectMode.None`_
 - [`dynamicRange: DynamicRange`](#dynamicrange) - _Default: `DynamicRange.Off`_
-- `videoStabilisation: boolean` - _Default: `false`_
+- `videoStabilization: boolean` - _Default: `false`_
 - `raw: boolean` - _Default: `false`_
 - [`meteringMode`](#meteringMode) - _Default: `MeteringMode.Off`_
 - `thumbnail: [number, number, number] | 'none'` - _Default: `[64, 48, 35]`_
@@ -325,13 +325,13 @@ const streamCamera = new StreamCamera({
 - `awbGains: [number, number]` - _Default: `null`_
 - `analogGain: number` - _Default: `0`_
 - `digitalGain: number` - _Default: `0`_
-- `colourEffect: [number, number]` - _Default: `[0,0]`_
-- [`imageEffect: ImxfxMode`](#imageeffect) - _Default: `ImxfxMode.None`_
+- `colorEffect: [number, number]` - _Default: `[0,0]`_
+- [`imageEffect: ImageEffectMode`](#imageeffect) - _Default: `ImageEffectMode.None`_
 - [`dynamicRange: DynamicRange`](#dynamicrange) - _Default: `DynamicRange.Off`_
-- `videoStabilisation: boolean` - _Default: `false`_
+- `videoStabilization: boolean` - _Default: `false`_
 - [`meteringMode`](#meteringMode) - _Default: `MeteringMode.Off`_
-- [`flickerMode`](#flickerMode) - _Default: `null`_
-- `roi: [number, number, number, number]` - _Default: `null`_
+- [`flickerMode`](#flickerMode) - _Default: `FlickerMode.Off`_
+- `roi: [number, number, number, number]` - _Default: Full sensor_
 - `statistics: boolean` - _Default: `false`_
 
 ### `startCapture(): Promise<void>`
@@ -530,29 +530,29 @@ import { AwbMode } from 'pi-camera-connect';
 
 Image Effect options.
 
-- `ImxfxMode.None`
-- `ImxfxMode.Negative`
-- `ImxfxMode.Solarise`
-- `ImxfxMode.Sketch`
-- `ImxfxMode.Denoise`
-- `ImxfxMode.Emboss`
-- `ImxfxMode.OilPaint`
-- `ImxfxMode.Hatch`
-- `ImxfxMode.GPen`
-- `ImxfxMode.Pastel`
-- `ImxfxMode.Watercolour`
-- `ImxfxMode.Film`
-- `ImxfxMode.Blur`
-- `ImxfxMode.Saturation`
-- `ImxfxMode.ColourSwap`
-- `ImxfxMode.WashedOut`
-- `ImxfxMode.Posterise`
-- `ImxfxMode.ColourPoint`
-- `ImxfxMode.ColourBalance`
-- `ImxfxMode.Cartoon`
+- `ImageEffectMode.None`
+- `ImageEffectMode.Negative`
+- `ImageEffectMode.Solarise`
+- `ImageEffectMode.Sketch`
+- `ImageEffectMode.Denoise`
+- `ImageEffectMode.Emboss`
+- `ImageEffectMode.OilPaint`
+- `ImageEffectMode.Hatch`
+- `ImageEffectMode.GPen`
+- `ImageEffectMode.Pastel`
+- `ImageEffectMode.Watercolour`
+- `ImageEffectMode.Film`
+- `ImageEffectMode.Blur`
+- `ImageEffectMode.Saturation`
+- `ImageEffectMode.ColourSwap`
+- `ImageEffectMode.WashedOut`
+- `ImageEffectMode.Posterise`
+- `ImageEffectMode.ColourPoint`
+- `ImageEffectMode.ColourBalance`
+- `ImageEffectMode.Cartoon`
 
 ```javascript
-import { ImxfxMode } from 'pi-camera-connect';
+import { ImageEffectMode } from 'pi-camera-connect';
 ```
 
 ## `DynamicRange`
@@ -587,8 +587,8 @@ Dynamic Range options.
 
 - `FlickerMode.Off`
 - `FlickerMode.Auto`
-- `FlickerMode.50hz`
-- `FlickerMode.60hz`
+- `FlickerMode.Frq50hz`
+- `FlickerMode.Frq60hz`
 
 ```javascript
 import { FlickerMode } from 'pi-camera-connect';
