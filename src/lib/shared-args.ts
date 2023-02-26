@@ -109,7 +109,7 @@ export function getSharedArgs(options: StillOptions | StreamOptions): string[] {
     /**
      * Image Effect
      */
-    ...(options.imageEffect ? ['--imxfx', options.imageEffect.toString()] : []),
+    ...(options.imageEffectMode ? ['--imxfx', options.imageEffectMode.toString()] : []),
 
     /**
      * Dynamic Range Control
@@ -165,5 +165,18 @@ export function getSharedArgs(options: StillOptions | StreamOptions): string[] {
      * normalised coordinates (0.0-1.0).
      */
     ...(options.roi ? ['--roi', options.roi.toString()] : []),
+
+    /**
+     * Annotate
+     * Adds some text and/or metadata to the picture.
+     */
+    ...(options.annotate ? options.annotate.flatMap(e => ['--annotate', e.toString()]) : []),
+
+    /**
+     * Annotate extra
+     * Specifies annotation size, text colour, and background color.
+     * Colors are in hex YUV format. Size ranges from 6 - 160; default is 32
+     */
+    ...(options.annotateExtra ? ['--annotateex', options.annotateExtra.toString()] : []),
   ];
 }

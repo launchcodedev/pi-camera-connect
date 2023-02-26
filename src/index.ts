@@ -85,6 +85,6 @@ export enum MeteringMode {
 export enum FlickerMode {
   Off = 'off',
   Auto = 'auto',
-  'Frq50hz' = '50hz',
-  'Frq60Hz' = '60hz',
+  Frq50hz = '50hz',
+  Frq60Hz = '60hz',
 }

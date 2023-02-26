@@ -29,18 +29,22 @@ export interface StillOptions {
   awbGains?: [number, number];
   analogGain?: number;
   digitalGain?: number;
-  imageEffect?: ImageEffectMode;
+  imageEffectMode?: ImageEffectMode;
   colorEffect?: [number, number]; // U,V
   dynamicRange?: DynamicRange;
   videoStabilization?: boolean;
   raw?: boolean;
   quality?: number;
   statistics?: boolean;
-  thumbnail?: [number, number, number] | 'none'; // X, Y, Q
+  thumbnail?: [number, number, number] | false; // X, Y, Q
   meteringMode?: MeteringMode;
   flickerMode?: FlickerMode;
   burst?: boolean;
   roi?: [number, number, number, number]; // X, Y, W, H
+  exif?: { [key: string]: string | number } | false;
+  gpsExif?: boolean;
+  annotate?: (number | string)[];
+  annotateExtra?: [number, string, string]; // fontSize, fontColor, backgroundColor
 }
 
 export default class StillCamera {
@@ -100,15 +104,33 @@ export default class StillCamera {
          * Thumbnail Settings (x:y:quality)
          * Allows specification of the thumbnail image inserted in to the JPEG file.
          * If not specified, defaults are a size of 64x48 at quality 35.
+         * `false` will remove the default thumbnail
          */
-        ...(this.options.thumbnail
-          ? [
-              '--thumb',
-              Array.isArray(this.options.thumbnail)
-                ? this.options.thumbnail.join(':')
-                : this.options.thumbnail,
-            ]
+        ...(Array.isArray(this.options.thumbnail) || this.options.thumbnail === false
+          ? ['--thumb', !this.options.thumbnail ? 'none' : this.options.thumbnail.join(':')]
           : []),
+
+        /**
+         * Exif information
+         * Allows the insertion of specific EXIF tags into the JPEG image.
+         * You can have up to 32 EXIF tag entries.
+         * Will overwrite any EXIF tag set automatically by the camera.
+         */
+        ...(this.options.exif
+          ? Object.keys(this.options.exif).flatMap(
+              key =>
+                ['--exif', `${key}=${(this.options.exif as any)[key as keyof StillOptions['exif']]}`],
+            )
+          : []),
+        // `false` will remove all the default EXIF information
+        ...(this.options.exif === false ? ['--exif', 'none'] : []),
+
+        /**
+         * GPS Exif
+         * Applies real-time EXIF information from any attached GPS dongle (using GSPD) to the image
+         * (requires libgps.so to be installed)
+         */
+        ...(this.options.gpsExif ? ['--gpsexif'] : []),
 
         /**
          * Output to stdout
@@ -117,7 +139,7 @@ export default class StillCamera {
         '-',
       ]);
     } catch (err) {
-      if (err.code === 'ENOENT') {
+      if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
         throw new Error(
           "Could not take image with StillCamera. Are you running on a Raspberry Pi with 'raspistill' installed?",
         );

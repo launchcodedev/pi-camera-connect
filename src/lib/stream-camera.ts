@@ -50,7 +50,7 @@ export interface StreamOptions {
   awbGains?: [number, number];
   analogGain?: number;
   digitalGain?: number;
-  imageEffect?: ImageEffectMode;
+  imageEffectMode?: ImageEffectMode;
   colorEffect?: [number, number]; // U,V
   dynamicRange?: DynamicRange;
   videoStabilization?: boolean;
@@ -58,6 +58,8 @@ export interface StreamOptions {
   meteringMode?: MeteringMode;
   flickerMode?: FlickerMode;
   roi?: [number, number, number, number]; // X, Y, W, H
+  annotate?: (number | string)[];
+  annotateExtra?: [number, string, string]; // fontSize, fontColor, backgroundColor
 }
 
 declare interface StreamCamera {
