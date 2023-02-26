@@ -144,7 +144,7 @@ export function getSharedArgs(options: StillOptions | StreamOptions): string[] {
     ...(options.flickerMode ? ['--flicker', options.flickerMode] : []),
 
     /**
-     * Video Stabilisation
+     * Video Stabilization
      * In video mode only, turn on video stabilization.
      */
     ...(options.videoStabilization ? ['--vstab'] : []),
