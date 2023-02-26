@@ -263,25 +263,25 @@ const stillCamera = new StillCamera({
 - `exposureCompensation: number` - _Range: `-10`-`10`; Default: `0`_
 - [`exposureMode: ExposureMode`](#exposuremode) - _Default: `ExposureMode.Auto`_
 - [`awbMode: AwbMode`](#awbmode) - _Default: `AwbMode.Auto`_
-- `awbGains: [number, number]` - _Default: `undefined`_
-- `analogGain: number` - _Range: `1.0`-`12.0` (OV5647: `1.0`-`0.8`); Default: `0`_
-- `digitalGain: number` - _Range: `1.0`-`64.0`; efault: `0`_
-- `quality: number` - _Range:`1`-`100`; Default: `100`_
-- `colorEffect: [number, number]` (U, V) - _Range: `0-255`; _Default: `undefined`_
+- `awbGains: [number, number]` - _Range: `0.0`-`8.0`; Default: `undefined`_
+- `analogGain: number` - _Range: `1.0`-`12.0` (OV5647: `1.0`-`8.0`); Default: `0`_
+- `digitalGain: number` - _Range: `1.0`-`64.0`; Default: `0`_
+- `quality: number` - _Range: `0`-`100`; Default: `100`_
+- `colorEffect: [number, number]` <small>(U, V)</small> - _Range: `0-255`; Default: `undefined`_
 - [`imageEffectMode: ImageEffectMode`](#imageeffectmode) - _Default: `ImageEffectMode.None`_
 - [`dynamicRange: DynamicRange`](#dynamicrange) - _Default: `DynamicRange.Off`_
 - `videoStabilization: boolean` - _Default: `false`_
 - `raw: boolean` - _Default: `false`_
 - [`meteringMode`](#meteringMode) - _Default: `MeteringMode.Off`_
-- `thumbnail: [number, number, number] | false` (X, Y, Q) - _Default: `[64, 48, 35]`; `false` to remove thumbnail_
+- `thumbnail: [number, number, number] | false` <small>(X, Y, Q)</small> - _Default: `[64, 48, 35]`; `false` to dismiss thumbnail_
 - [`flickerMode`](#flickerMode) - _Default: `FlickerMode.Off`_
 - `burst: boolean` - _Default: `false`_
-- `roi: [number, number, number, number]` (X, Y, W, H) - _Range: `0.0`-`1.0`; _Default: `[0, 0, 1, 1]` (Full sensor)_
+- `roi: [number, number, number, number]` <small>(X, Y, W, H)</small> - _Range: `0.0`-`1.0`; Default: `[0, 0, 1, 1]` (Full sensor)_
 - `statistics: boolean` - _Default: `false`_
-- `exif: { [key:string]: string | number } | false` - _Default: Automatic camera values; `false` to remove default exif_
+- `exif: { [key:string]: string | number } | false` - _Default: Default camera values; `false` to dissmis default exif_
 - `gpsExif: boolean` - _Default: `false`_
 - `annotate: (number | string)[]` - _Default: No annotations_
-- `annotateExtra: [number, string, string]` (fontSize, fontColor, backgroundColor) - _Default: [32, '0xff', '0x808000']_
+- `annotateExtra: [number, string, string]` <small>(fontSize, fontColor, backgroundColor)</small> - _Default: `[32, '0xff', '0x808000']`_
 
 ### `StillCamera.takeImage(): Promise<Buffer>`
 
@@ -326,19 +326,19 @@ const streamCamera = new StreamCamera({
 - `exposureCompensation: number` - _Range: `-10`-`10`; Default: `0`_
 - [`exposureMode: ExposureMode`](#exposuremode) - _Default: `ExposureMode.Auto`_
 - [`awbMode: AwbMode`](#awbmode) - _Default: `AwbMode.Auto`_
-- `awbGains: [number, number]` - _Default: `undefined`_
-- `analogGain: number` - _Range: `1.0`-`12.0` (OV5647: `1.0`-`0.8`); Default: `0`_
-- `digitalGain: number` - _Range: `1.0`-`64.0`; efault: `0`_
-- `colorEffect: [number, number]` (U, V) - _Range: `0-255`; _Default: `undefined`_
+- `awbGains: [number, number]` - _Range: `0.0`-`8.0`; Default: `undefined`_
+- `analogGain: number` - _Range: `1.0`-`12.0` (OV5647: `1.0`-`8.0`); Default: `0`_
+- `digitalGain: number` - _Range: `1.0`-`64.0`; Default: `0`_
+- `colorEffect: [number, number]` <small>(U, V)</small> - _Range: `0-255`; Default: `undefined`_
 - [`imageEffectMode: ImageEffectMode`](#imageeffectmode) - _Default: `ImageEffectMode.None`_
 - [`dynamicRange: DynamicRange`](#dynamicrange) - _Default: `DynamicRange.Off`_
 - `videoStabilization: boolean` - _Default: `false`_
 - [`meteringMode`](#meteringMode) - _Default: `MeteringMode.Off`_
 - [`flickerMode`](#flickerMode) - _Default: `FlickerMode.Off`_
-- `roi: [number, number, number, number]` (X, Y, W, H) - _Range: `0.0`-`1.0`; Default: `[0, 0, 1, 1]` (Full sensor)_
+- `roi: [number, number, number, number]` <small>(X, Y, W, H)</small> - _Range: `0.0`-`1.0`; Default: `[0, 0, 1, 1]` (Full sensor)_
 - `statistics: boolean` - _Default: `false`_
 - `annotate: (number | string)[]` - _Default: No annotations_
-- `annotateExtra: [number, string, string]` (fontSize, fontColor, backgroundColor) - _Default: [32, '0xff', '0x808000']_
+- `annotateExtra: [number, string, string]` <small>(fontSize, fontColor, backgroundColor)</small> - _Default: `[32, '0xff', '0x808000']`_
 
 ### `startCapture(): Promise<void>`
 

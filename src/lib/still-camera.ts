@@ -117,10 +117,10 @@ export default class StillCamera {
          * Will overwrite any EXIF tag set automatically by the camera.
          */
         ...(this.options.exif
-          ? Object.keys(this.options.exif).flatMap(
-              key =>
-                ['--exif', `${key}=${(this.options.exif as any)[key as keyof StillOptions['exif']]}`],
-            )
+          ? Object.keys(this.options.exif).flatMap(key => [
+              '--exif',
+              `${key}=${(this.options.exif as any)[key as keyof StillOptions['exif']]}`,
+            ])
           : []),
         // `false` will remove all the default EXIF information
         ...(this.options.exif === false ? ['--exif', 'none'] : []),
