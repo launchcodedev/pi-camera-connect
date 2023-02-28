@@ -230,6 +230,8 @@ Note that this example produces a raw H264 video. Wrapping it in a video contain
 - [`SensorMode`](#sensormode)
 - [`ExposureMode`](#exposuremode)
 - [`AwbMode`](#awbmode)
+- [`DynamicRange`](#dynamicRange)
+- [`ImageEffectMode`](#imageEffectMode)
 
 ## `StillCamera`
 
@@ -261,8 +263,25 @@ const stillCamera = new StillCamera({
 - `exposureCompensation: number` - _Range: `-10`-`10`; Default: `0`_
 - [`exposureMode: ExposureMode`](#exposuremode) - _Default: `ExposureMode.Auto`_
 - [`awbMode: AwbMode`](#awbmode) - _Default: `AwbMode.Auto`_
-- `analogGain: number` - _Default: `0`_
-- `digitalGain: number` - _Default: `0`_
+- `awbGains: [number, number]` - _Range: `0.0`-`8.0`; Default: `undefined`_
+- `analogGain: number` - _Range: `1.0`-`12.0` (OV5647: `1.0`-`8.0`); Default: `0`_
+- `digitalGain: number` - _Range: `1.0`-`64.0`; Default: `0`_
+- `quality: number` - _Range: `0`-`100`; Default: `100`_
+- `colorEffect: [number, number]` <small>(U, V)</small> - _Range: `0-255`; Default: `undefined`_
+- [`imageEffectMode: ImageEffectMode`](#imageeffectmode) - _Default: `ImageEffectMode.None`_
+- [`dynamicRange: DynamicRange`](#dynamicrange) - _Default: `DynamicRange.Off`_
+- `videoStabilization: boolean` - _Default: `false`_
+- `raw: boolean` - _Default: `false`_
+- [`meteringMode`](#meteringMode) - _Default: `MeteringMode.Off`_
+- `thumbnail: [number, number, number] | false` <small>(X, Y, Q)</small> - _Default: `[64, 48, 35]`; `false` to dismiss thumbnail_
+- [`flickerMode`](#flickerMode) - _Default: `FlickerMode.Off`_
+- `burst: boolean` - _Default: `false`_
+- `roi: [number, number, number, number]` <small>(X, Y, W, H)</small> - _Range: `0.0`-`1.0`; Default: `[0, 0, 1, 1]` (Full sensor)_
+- `statistics: boolean` - _Default: `false`_
+- `exif: { [key:string]: string | number } | false` - _Default: Default camera values; `false` to dissmis default exif_
+- `gpsExif: boolean` - _Default: `false`_
+- `annotate: (number | string)[]` - _Default: No annotations_
+- `annotateExtra: [number, string, string]` <small>(fontSize, fontColor, backgroundColor)</small> - _Default: `[32, '0xff', '0x808000']`_
 
 ### `StillCamera.takeImage(): Promise<Buffer>`
 
@@ -307,8 +326,19 @@ const streamCamera = new StreamCamera({
 - `exposureCompensation: number` - _Range: `-10`-`10`; Default: `0`_
 - [`exposureMode: ExposureMode`](#exposuremode) - _Default: `ExposureMode.Auto`_
 - [`awbMode: AwbMode`](#awbmode) - _Default: `AwbMode.Auto`_
-- `analogGain: number` - _Default: `0`_
-- `digitalGain: number` - _Default: `0`_
+- `awbGains: [number, number]` - _Range: `0.0`-`8.0`; Default: `undefined`_
+- `analogGain: number` - _Range: `1.0`-`12.0` (OV5647: `1.0`-`8.0`); Default: `0`_
+- `digitalGain: number` - _Range: `1.0`-`64.0`; Default: `0`_
+- `colorEffect: [number, number]` <small>(U, V)</small> - _Range: `0-255`; Default: `undefined`_
+- [`imageEffectMode: ImageEffectMode`](#imageeffectmode) - _Default: `ImageEffectMode.None`_
+- [`dynamicRange: DynamicRange`](#dynamicrange) - _Default: `DynamicRange.Off`_
+- `videoStabilization: boolean` - _Default: `false`_
+- [`meteringMode`](#meteringMode) - _Default: `MeteringMode.Off`_
+- [`flickerMode`](#flickerMode) - _Default: `FlickerMode.Off`_
+- `roi: [number, number, number, number]` <small>(X, Y, W, H)</small> - _Range: `0.0`-`1.0`; Default: `[0, 0, 1, 1]` (Full sensor)_
+- `statistics: boolean` - _Default: `false`_
+- `annotate: (number | string)[]` - _Default: No annotations_
+- `annotateExtra: [number, string, string]` <small>(fontSize, fontColor, backgroundColor)</small> - _Default: `[32, '0xff', '0x808000']`_
 
 ### `startCapture(): Promise<void>`
 
@@ -446,7 +476,19 @@ These are slightly different depending on the version of Raspberry Pi camera you
 | 4    | 1640x1232           | 4:3          | 0.1-40fps   | Full    | 2x2     |
 | 5    | 1640x922            | 16:9         | 0.1-40fps   | Full    | 2x2     |
 | 6    | 1280x720            | 16:9         | 40-90fps    | Partial | 2x2     |
-| 7    | 640x480             | 4:3          | 40-90fps    | Partial | 2x2     |
+| 7    | 640x480             | 4:3          | 40-200fps*  | Partial | 2x2     |
+
+*For frame rates over 120fps, it is necessary to turn off automatic exposure and gain control using -ex off. Doing so should achieve the higher frame rates, but exposure time and gains will need to be set to fixed values supplied by the user.
+
+#### HQ Camera (IMX477):
+
+| Mode |        Size         | Aspect Ratio | Frame rates |   FOV   |   Binning   |
+|------|---------------------|--------------|-------------|---------|-------------|
+| 0    | automatic selection |              |             |         |             |
+| 1    | 2028x1080           | 169:90       | 0.1-50fps   | Partial | 2x2 binned  |
+| 2    | 2028x1520           | 4:3          | 0.1-50fps   | Full    | 2x2 binned  |
+| 3    | 4056x3040           | 4:3          | 0.005-10fps | Full    | None        |
+| 4    | 1332x990            | 74:55        | 50.1-120fps | Partial | 2x2 binned  |
 
 ## `ExposureMode`
 
@@ -488,4 +530,72 @@ White balance mode options.
 
 ```javascript
 import { AwbMode } from 'pi-camera-connect';
+```
+
+## `ImageEffectMode`
+
+Image Effect options.
+
+- `ImageEffectMode.None`
+- `ImageEffectMode.Negative`
+- `ImageEffectMode.Solarise`
+- `ImageEffectMode.Sketch`
+- `ImageEffectMode.Denoise`
+- `ImageEffectMode.Emboss`
+- `ImageEffectMode.OilPaint`
+- `ImageEffectMode.Hatch`
+- `ImageEffectMode.GPen`
+- `ImageEffectMode.Pastel`
+- `ImageEffectMode.Watercolour`
+- `ImageEffectMode.Film`
+- `ImageEffectMode.Blur`
+- `ImageEffectMode.Saturation`
+- `ImageEffectMode.ColourSwap`
+- `ImageEffectMode.WashedOut`
+- `ImageEffectMode.Posterise`
+- `ImageEffectMode.ColourPoint`
+- `ImageEffectMode.ColourBalance`
+- `ImageEffectMode.Cartoon`
+
+```javascript
+import { ImageEffectMode } from 'pi-camera-connect';
+```
+
+## `DynamicRange`
+
+Dynamic Range options.
+
+- `DynamicRange.Off`
+- `DynamicRange.Low`
+- `DynamicRange.Medium`
+- `DynamicRange.High`
+
+```javascript
+import { DynamicRange } from 'pi-camera-connect';
+```
+
+## `MeteringMode`
+
+Dynamic Range options.
+
+- `MeteringMode.Average`
+- `MeteringMode.Spot`
+- `MeteringMode.Backlit`
+- `MeteringMode.Matrix`
+
+```javascript
+import { MeteringMode } from 'pi-camera-connect';
+```
+
+## `FlickerMode`
+
+Dynamic Range options.
+
+- `FlickerMode.Off`
+- `FlickerMode.Auto`
+- `FlickerMode.Frq50hz`
+- `FlickerMode.Frq60hz`
+
+```javascript
+import { FlickerMode } from 'pi-camera-connect';
 ```

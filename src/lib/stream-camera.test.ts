@@ -1,6 +1,17 @@
+import * as fs from 'fs';
+import { performance } from 'perf_hooks';
+
 import StreamCamera, { Codec } from './stream-camera';
 
+const TEST_IMAGES_DIR = 'test_images';
+
+if (!fs.existsSync(TEST_IMAGES_DIR)) {
+  fs.mkdirSync(TEST_IMAGES_DIR);
+}
+
 test('Method takeImage() grabs JPEG from MJPEG stream', async () => {
+  const t0 = performance.now();
+
   const streamCamera = new StreamCamera({
     codec: Codec.MJPEG,
   });
@@ -10,6 +21,10 @@ test('Method takeImage() grabs JPEG from MJPEG stream', async () => {
   const jpegImage = await streamCamera.takeImage();
 
   await streamCamera.stopCapture();
+  const t1 = performance.now();
+
+  const time = ((t1 - t0) / 1000).toFixed(2);
+  await fs.promises.writeFile(`test_images/streamCapture_(${time}-secs).jpeg`, jpegImage, 'binary');
 
   expect(jpegImage.indexOf(StreamCamera.jpegSignature)).toBe(0);
 });

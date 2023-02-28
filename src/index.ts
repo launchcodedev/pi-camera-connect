@@ -44,3 +44,47 @@ export enum AwbMode {
   Horizon = 'horizon',
   GreyWorld = 'greyworld',
 }
+
+export enum ImageEffectMode {
+  None = 'none',
+  Negative = 'negative',
+  Solarise = 'solarise',
+  Sketch = 'sketch',
+  Denoise = 'denoise',
+  Emboss = 'emboss',
+  OilPaint = 'oilpaint',
+  Hatch = 'hatch',
+  GPen = 'gpen',
+  Pastel = 'pastel',
+  Watercolour = 'watercolour',
+  Film = 'film',
+  Blur = 'blur',
+  Saturation = 'saturation',
+  ColourSwap = 'colourswap',
+  WashedOut = 'washedout',
+  Posterise = 'posterise',
+  ColourPoint = 'colourpoint',
+  ColourBalance = 'colourbalance',
+  Cartoon = 'cartoon',
+}
+
+export enum DynamicRange {
+  Off = 'off',
+  Low = 'low',
+  Medium = 'medium',
+  High = 'high',
+}
+
+export enum MeteringMode {
+  Average = 'average',
+  Spot = 'spot',
+  Backlit = 'backlit',
+  Matrix = 'matrix',
+}
+
+export enum FlickerMode {
+  Off = 'off',
+  Auto = 'auto',
+  Frq50hz = '50hz',
+  Frq60hz = '60hz',
+}
