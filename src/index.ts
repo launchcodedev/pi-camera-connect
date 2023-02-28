@@ -86,5 +86,5 @@ export enum FlickerMode {
   Off = 'off',
   Auto = 'auto',
   Frq50hz = '50hz',
-  Frq60Hz = '60hz',
+  Frq60hz = '60hz',
 }
